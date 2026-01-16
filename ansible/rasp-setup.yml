@@ -1,8 +1,9 @@
 ---
 - name: Setup BTT SKR3 CNC Machine
-  hosts: all
-  become: yes
-  
+  hosts: localhost
+  become: true
+  connection: local
+
   vars:
     # Avahi configuration (for mDNS/SSH announcement)
     avahi_hostname: "kwcnc"
