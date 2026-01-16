@@ -30,3 +30,144 @@
   debug:
     msg: "gSender is already installed (version: {{ gsender_installed_version.stdout }})"
   when: gsender_installed_version.rc == 0 and not gsender_force_reinstall
+
+- name: Create gsender system group
+  group:
+    name: "{{ gsender_group }}"
+    system: yes
+    state: present
+
+- name: Create gsender system user
+  user:
+    name: "{{ gsender_user }}"
+    group: "{{ gsender_group }}"
+    groups: dialout
+    system: yes
+    create_home: yes
+    home: "{{ gsender_home }}"
+    shell: /usr/sbin/nologin
+    comment: "gSender CNC Control Service User"
+    state: present
+
+- name: Create gsender systemd service file
+  template:
+    src: gsender.service.j2
+    dest: /etc/systemd/system/gsender.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart gsender
+
+- name: Enable and start gsender service
+  systemd:
+    name: gsender
+    enabled: yes
+    state: started
+    daemon_reload: yes
+
+# Nginx reverse proxy setup
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  when: gsender_enable_nginx
+
+- name: Create SSL certificate directory
+  file:
+    path: /etc/ssl/private
+    state: directory
+    mode: '0755'
+  when: gsender_enable_nginx
+
+- name: Check if SSL certificate exists
+  stat:
+    path: "{{ gsender_ssl_cert_path }}"
+  register: ssl_cert_stat
+  when: gsender_enable_nginx
+
+- name: Generate self-signed SSL certificate
+  command: >
+    openssl req -x509 -nodes -days {{ gsender_ssl_days_valid }}
+    -newkey rsa:2048
+    -keyout {{ gsender_ssl_key_path }}
+    -out {{ gsender_ssl_cert_path }}
+    -subj "/C={{ gsender_ssl_country }}/ST={{ gsender_ssl_state }}/L={{ gsender_ssl_locality }}/O={{ gsender_ssl_organization }}/CN={{ gsender_ssl_common_name }}"
+  when: gsender_enable_nginx and not ssl_cert_stat.stat.exists
+
+- name: Set SSL certificate permissions
+  file:
+    path: "{{ gsender_ssl_cert_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  when: gsender_enable_nginx
+
+- name: Set SSL key permissions
+  file:
+    path: "{{ gsender_ssl_key_path }}"
+    owner: root
+    group: root
+    mode: '0600'
+  when: gsender_enable_nginx
+
+- name: Create nginx configuration for gsender
+  template:
+    src: nginx-gsender.conf.j2
+    dest: /etc/nginx/sites-available/gsender
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart nginx
+  when: gsender_enable_nginx
+
+- name: Enable nginx site configuration
+  file:
+    src: /etc/nginx/sites-available/gsender
+    dest: /etc/nginx/sites-enabled/gsender
+    state: link
+  notify: restart nginx
+  when: gsender_enable_nginx
+
+- name: Remove default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+  when: gsender_enable_nginx
+
+- name: Enable and start nginx
+  systemd:
+    name: nginx
+    enabled: yes
+    state: started
+  when: gsender_enable_nginx
+
+# Avahi service announcement
+- name: Install avahi-daemon
+  apt:
+    name:
+      - avahi-daemon
+      - avahi-utils
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  when: gsender_enable_avahi
+
+- name: Create Avahi service file for gSender
+  template:
+    src: gsender.avahi-service.j2
+    dest: /etc/avahi/services/gsender.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart avahi-daemon
+  when: gsender_enable_avahi
+
+- name: Enable and start avahi-daemon
+  systemd:
+    name: avahi-daemon
+    enabled: yes
+    state: started
+  when: gsender_enable_avahi

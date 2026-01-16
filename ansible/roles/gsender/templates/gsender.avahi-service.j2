@@ -1,0 +1,23 @@
+<!-- This file is managed by Ansible - DO NOT EDIT MANUALLY -->
+<?xml version="1.0" standalone='no'?>
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+
+<service-group>
+  <name replace-wildcards="yes">{{ gsender_avahi_service_name }}</name>
+  
+  <!-- HTTPS Service -->
+  <service>
+    <type>_https._tcp</type>
+    <port>{{ gsender_nginx_port }}</port>
+    <txt-record>path=/</txt-record>
+    <txt-record>description=gSender CNC Control Web Interface</txt-record>
+  </service>
+  
+  <!-- HTTP Service (redirect to HTTPS) -->
+  <service>
+    <type>_http._tcp</type>
+    <port>{{ gsender_nginx_http_port }}</port>
+    <txt-record>path=/</txt-record>
+    <txt-record>description=gSender CNC Control (redirects to HTTPS)</txt-record>
+  </service>
+</service-group>

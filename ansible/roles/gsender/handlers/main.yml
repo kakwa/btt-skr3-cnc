@@ -1,0 +1,16 @@
+---
+- name: restart gsender
+  systemd:
+    name: gsender
+    state: restarted
+    daemon_reload: yes
+
+- name: restart nginx
+  systemd:
+    name: nginx
+    state: restarted
+
+- name: restart avahi-daemon
+  systemd:
+    name: avahi-daemon
+    state: restarted
