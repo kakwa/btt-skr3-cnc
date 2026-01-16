@@ -1,0 +1,32 @@
+---
+# Install gSender CNC control software for Raspberry Pi
+
+- name: Check if gSender is already installed
+  command: dpkg-query -W -f='${Version}' gsender
+  register: gsender_installed_version
+  failed_when: false
+  changed_when: false
+
+- name: Download gSender .deb package
+  get_url:
+    url: "{{ gsender_deb_url }}"
+    dest: "{{ gsender_deb_path }}"
+    mode: '0644'
+    timeout: 300
+  when: gsender_installed_version.rc != 0 or gsender_force_reinstall
+
+- name: Install gSender from .deb package
+  apt:
+    deb: "{{ gsender_deb_path }}"
+    state: present
+  when: gsender_installed_version.rc != 0 or gsender_force_reinstall
+
+- name: Display installation status
+  debug:
+    msg: "gSender {{ gsender_version }} installed successfully"
+  when: gsender_installed_version.rc != 0 or gsender_force_reinstall
+
+- name: Display already installed message
+  debug:
+    msg: "gSender is already installed (version: {{ gsender_installed_version.stdout }})"
+  when: gsender_installed_version.rc == 0 and not gsender_force_reinstall

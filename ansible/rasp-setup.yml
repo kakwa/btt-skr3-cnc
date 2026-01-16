@@ -21,3 +21,4 @@
     # Local custom roles
     - { role: hostname, tags: ["system", "hostname"] }
     - { role: avahi, tags: ["system", "network", "avahi"] }
+    - { role: gsender, tags: ["apps", "gsender"] }
