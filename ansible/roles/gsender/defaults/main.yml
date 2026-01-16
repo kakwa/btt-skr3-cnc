@@ -1,0 +1,6 @@
+---
+# gSender installation defaults
+gsender_version: "1.5.7"
+gsender_deb_url: "https://github.com/Sienci-Labs/gsender/releases/download/v{{ gsender_version }}/gSender-{{ gsender_version }}-PI-64Bit.deb"
+gsender_deb_path: "/root/gsender-{{ gsender_version }}-pi-64bit.deb"
+gsender_force_reinstall: false
