@@ -1,6 +1,13 @@
 ---
 # Install gSender CNC control software for Raspberry Pi
 
+- name: Install xvfb for virtual X11 display
+  apt:
+    name: xvfb
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+
 - name: Check if gSender is already installed
   command: dpkg-query -W -f='${Version}' gsender
   register: gsender_installed_version
