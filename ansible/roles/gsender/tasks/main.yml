@@ -48,7 +48,7 @@
   user:
     name: "{{ gsender_user }}"
     group: "{{ gsender_group }}"
-    groups: dialout
+    groups: dialout,video
     system: yes
     create_home: yes
     home: "{{ gsender_home }}"
