@@ -8,7 +8,7 @@ Type=simple
 User={{ gsender_user }}
 Group={{ gsender_group }}
 WorkingDirectory={{ gsender_home }}
-ExecStart=/usr/bin/gSender \
+ExecStart=/opt/gSender/gsender \
     --host {{ gsender_host }} \
     --port {{ gsender_port }} \
 {% if gsender_allow_remote_access %}
