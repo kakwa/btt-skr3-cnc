@@ -1,0 +1,5 @@
+# This file is managed by Ansible - DO NOT EDIT MANUALLY
+# Remote logging configuration for rsyslog
+
+# Send all logs to remote server
+*.* @{{ rsyslog_remote_host }}:{{ rsyslog_remote_port }}
