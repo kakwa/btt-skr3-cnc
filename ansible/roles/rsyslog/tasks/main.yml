@@ -1,0 +1,17 @@
+---
+# Install and configure rsyslog and logrotate
+
+- name: Install rsyslog and logrotate packages
+  apt:
+    name: "{{ rsyslog_packages }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Ensure rsyslog configuration directory exists
+  file:
+    path: /etc/rsyslog.d
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root

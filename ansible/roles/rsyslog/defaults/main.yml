@@ -1,0 +1,43 @@
+---
+# rsyslog and logrotate configuration defaults
+
+# rsyslog packages to install
+rsyslog_packages:
+  - rsyslog
+  - logrotate
+
+# rsyslog service settings
+rsyslog_service_enabled: true
+rsyslog_service_state: started
+
+# rsyslog configuration
+rsyslog_max_message_size: 8k
+rsyslog_file_create_mode: "0640"
+rsyslog_dir_create_mode: "0755"
+rsyslog_file_owner: "syslog"
+rsyslog_file_group: "adm"
+
+# Enable remote logging
+rsyslog_enable_remote_logging: false
+rsyslog_remote_host: ""
+rsyslog_remote_port: 514
+
+# Custom log files to manage with logrotate
+rsyslog_custom_logs: []
+#  - name: "gsender"
+#    path: "/var/log/gsender/*.log"
+#    options:
+#      - daily
+#      - rotate 7
+#      - compress
+#      - delaycompress
+#      - notifempty
+#      - create 0640 syslog adm
+#      - sharedscripts
+#    postrotate: "systemctl reload rsyslog > /dev/null 2>&1 || true"
+
+# Logrotate global settings
+logrotate_frequency: daily
+logrotate_rotate_count: 7
+logrotate_compress: true
+logrotate_delaycompress: true
