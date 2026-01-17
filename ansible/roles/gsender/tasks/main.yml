@@ -3,7 +3,7 @@
 
 - name: Install xvfb for virtual X11 display
   apt:
-    name: xvfb
+    name: xwayland-run
     state: present
     update_cache: yes
     cache_valid_time: 3600
