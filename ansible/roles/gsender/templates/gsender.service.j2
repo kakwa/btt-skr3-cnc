@@ -11,6 +11,7 @@ WorkingDirectory={{ gsender_home }}
 ExecStart=/opt/gSender/gsender \
     --host {{ gsender_host }} \
     --port {{ gsender_port }} \
+    --remote \
 {% if gsender_allow_remote_access %}
     --allow-remote-access \
 {% endif %}
