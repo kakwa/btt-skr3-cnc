@@ -2,20 +2,48 @@
 
 ## Introduction
 
-Last year, I joined a local fablab, If you like building stuff, I would highly recommand you to try.
-These are great place to learn new skills, spend time with wonderful people and play with machines out of reach of a typical toolbox.
+Last year, I joined a local fablab. If you like building stuff, I would highly recommend it.
+These are great places to learn new skills, spend time with wonderful people and play with machines out of reach of a typical toolbox.
 
-One of these fun tools in my local fablab is a CNC router by Yeti Tool, but unfortunately, it has been broken ever since I joined.
-And to complicate matters, the company [went under in 2024](https://find-and-update.company-information.service.gov.uk/company/11310906/insolvency), with only basic support and spare part are now available through [Trend UK](https://www.trend-eu.com/products/cnc-machines/trend-yeti-cnc-smartbench/trend-yeti-cnc-smartbench).
+One of these tools in my local fablab is a CNC router by Yeti Tool. I would love to play with it, but unfortunately, it went out of service months before I joined.
+To complicate matters, [Yeti Tool went under in 2024](https://find-and-update.company-information.service.gov.uk/company/11310906/insolvency). Not ideal, even if [Trend UK](https://www.trend-eu.com/products/cnc-machines/trend-yeti-cnc-smartbench/trend-yeti-cnc-smartbench) stepped-up and started providing spare parts and support.
 
 In our case, it's the electronic boards which have various issues, from broken connectors to fried components.
+I'm not actually sure what the issues are. I could probably investigate and fix these, but I'm actually not too keen on it:
 
-I might be way over my head, Duning Krugger style, but I've set my sight on trying to revive this router. As itself, it could be a fun project, and a step-up from building my small Voron 0.2. Not very reasonable, but as we say, You Live Only Once.
+1. the fix would likely be a fragile bodge work just waiting to break again.
+2. even if it worked, it would let the tool in an unmaintainable state, with no effective software support and partial hardware one.
+3. I would not learn as much.
 
-Even less reasonable, I'm actually not too keen on simply trying to fix the current electronic. It would probably be feasable, but:
+For all these reasons, plus my incurable Open Source ethos, I'm much more keen on trying to rebuild the whole controller & stepper drivers stuff.
+I might be way over my head, Dunning-Kruger style, but as we say, You Live Only Once, and it's a nice step up from a Voron 0.2 build.
 
-.1 it would probably be a fragile bodge work likely to break again.
-.2 even if it worked, would let the tool in an unmaintainable state, with no effective software or hardware support.
-.3 I would not learn as much.
+## What Are The Options?
 
-For all these reasons, plus my incurable Open Source ethos, I'm much more keen on trying to rebuild the whole controller & stepper driver stuff.
+Let's limit ourself to Open Source options.
+
+TODO Linux CNC + required hardware 
+
+More "printer like" setups
+TODO FluidNC + ESP32
+TODO GrblHAL + STM32
+
+TODO final choice:
+
+ BTT SKR3 Pro + TMC 5160 + Pie
+
+ GRBHAL + gsender
+
+Probably will encounter issues like not enough end stops or no way to control the spindle, but not too concerned, these parts could easily be repurposed for a voron 2.4 or Trident.
+
+## Starting By the End
+
+TODO: gsender setup (package ansible role nginx xwfb/xvfb hacks, importance of video + dialout groups.
+
+Screenshots 
+
+## Grbhal Build
+
+
+
+
