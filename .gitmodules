@@ -1,3 +1,6 @@
 [submodule "ansible/external/ansible"]
 	path = ansible/external/ansible
 	url = https://github.com/kakwa/ansible
+[submodule "grblhal"]
+	path = grblhal
+	url = https://github.com/dresco/STM32H7xx
