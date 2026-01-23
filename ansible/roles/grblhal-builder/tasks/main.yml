@@ -1,0 +1,163 @@
+---
+# Install grblHAL build and flash tools
+
+- name: Install ARM GCC toolchain and build tools
+  apt:
+    name:
+      - gcc-arm-none-eabi
+      - binutils-arm-none-eabi
+      - libnewlib-arm-none-eabi
+      - libstdc++-arm-none-eabi-newlib
+      - make
+      - cmake
+      - build-essential
+      - git
+    state: "{{ grblhal_arm_toolchain_state }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  when: grblhal_install_build_tools
+
+- name: Install Python tools
+  apt:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  when: grblhal_install_build_tools
+
+- name: Install PlatformIO Core
+  apt:
+    name:
+      - platformio-core
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  when: grblhal_install_build_tools
+
+- name: Install stlink tools for flashing
+  apt:
+    name:
+      - stlink-tools
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  when: grblhal_install_flash_tools
+
+- name: Create grblHAL source directory
+  file:
+    path: "{{ grblhal_source_dir }}"
+    state: directory
+    owner: "{{ grblhal_build_user }}"
+    group: "{{ grblhal_build_group }}"
+    mode: '0755'
+  when: grblhal_deploy_sources
+
+- name: Check if local grblHAL source exists
+  stat:
+    path: "{{ grblhal_local_source }}"
+  register: grblhal_local_stat
+  delegate_to: localhost
+  become: no
+  when: grblhal_deploy_sources
+
+- name: Deploy grblHAL sources from local repository
+  synchronize:
+    src: "{{ grblhal_local_source }}/"
+    dest: "{{ grblhal_source_dir }}/"
+    delete: no
+    recursive: yes
+    rsync_opts:
+      - "--exclude=.git"
+      - "--exclude=build"
+      - "--exclude=*.o"
+      - "--exclude=*.elf"
+      - "--exclude=*.bin"
+      - "--exclude=*.hex"
+  when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
+
+- name: Display warning if local sources not found
+  debug:
+    msg: "WARNING: Local grblHAL sources not found at {{ grblhal_local_source }}. Skipping deployment."
+  when: grblhal_deploy_sources and not grblhal_local_stat.stat.exists
+
+- name: Set ownership of grblHAL sources
+  file:
+    path: "{{ grblhal_source_dir }}"
+    owner: "{{ grblhal_build_user }}"
+    group: "{{ grblhal_build_group }}"
+    recurse: yes
+  when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
+
+- name: Create build directory
+  file:
+    path: "{{ grblhal_build_dir }}"
+    state: directory
+    owner: "{{ grblhal_build_user }}"
+    group: "{{ grblhal_build_group }}"
+    mode: '0755'
+  when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
+
+- name: Deploy SKR3 build script
+  template:
+    src: skr3-build.sh.j2
+    dest: /usr/local/bin/skr3-build
+    owner: root
+    group: root
+    mode: '0755'
+  when: grblhal_install_build_tools
+
+- name: Deploy SKR3 flash script
+  template:
+    src: skr3-flash.sh.j2
+    dest: /usr/local/bin/skr3-flash
+    owner: root
+    group: root
+    mode: '0755'
+  when: grblhal_install_flash_tools
+
+- name: Display ARM GCC version
+  command: arm-none-eabi-gcc --version
+  register: arm_gcc_version
+  changed_when: false
+  when: grblhal_install_build_tools
+
+- name: Show ARM GCC version
+  debug:
+    msg: "{{ arm_gcc_version.stdout_lines[0] }}"
+  when: grblhal_install_build_tools and arm_gcc_version.stdout_lines is defined
+
+- name: Display PlatformIO version
+  command: platformio --version
+  register: platformio_version
+  changed_when: false
+  when: grblhal_install_build_tools
+
+- name: Show PlatformIO version
+  debug:
+    msg: "{{ platformio_version.stdout }}"
+  when: grblhal_install_build_tools and platformio_version.stdout is defined
+
+- name: Display helper scripts information
+  debug:
+    msg:
+      - "========================================"
+      - "grblHAL Build Environment Ready!"
+      - "========================================"
+      - "Source directory: {{ grblhal_source_dir }}"
+      - "Build directory: {{ grblhal_build_dir }}"
+      - "Target board: {{ grblhal_board }}"
+      - "MCU: {{ grblhal_mcu }}"
+      - ""
+      - "Helper scripts installed:"
+      - "  - skr3-build    Build the firmware"
+      - "  - skr3-flash    Flash the firmware (stlink-tools)"
+      - ""
+      - "Usage:"
+      - "  skr3-build              # Build firmware"
+      - "  skr3-flash              # Flash latest firmware"
+      - "  skr3-flash custom.bin   # Flash specific firmware"
+      - "========================================"
+  when: grblhal_install_build_tools

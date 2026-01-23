@@ -1,0 +1,10 @@
+---
+- name: Add misc-pkg repository
+  ansible.builtin.deb822_repository:
+    name: misc-pkg
+    types: deb
+    uris: https://kakwa.github.io/misc-pkg/deb.{{ ansible_facts['lsb']['codename'] }}.arm64/
+    suites: "{{ ansible_facts['lsb']['codename'] }}"
+    components: main
+    architectures: arm64
+    signed_by: https://kakwa.github.io/misc-pkg/GPG-KEY.pub

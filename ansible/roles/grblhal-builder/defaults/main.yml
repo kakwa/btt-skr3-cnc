@@ -1,0 +1,28 @@
+---
+# grblHAL build tools configuration
+
+# Build tools user
+grblhal_build_user: "{{ ansible_user_id }}"
+grblhal_build_group: "{{ ansible_user_id }}"
+
+# Installation paths
+grblhal_source_dir: "/opt/grblhal"
+grblhal_build_dir: "{{ grblhal_source_dir }}/build"
+
+# Source repository on the local machine (relative to playbook)
+grblhal_local_source: "{{ playbook_dir }}/../grblhal"
+
+# Target board configuration
+grblhal_board: "BTT_SKR_3_EZ"
+grblhal_mcu: "STM32H7xx"
+
+# ARM toolchain version (use 'present' for distro version)
+grblhal_arm_toolchain_state: present
+
+# Enable/disable components
+grblhal_install_build_tools: true
+grblhal_install_flash_tools: true
+grblhal_deploy_sources: true
+
+# Flash tool: stlink-tools (hardcoded)
+grblhal_flash_tool: "stlink"
