@@ -8,7 +8,7 @@
   <!-- HTTPS Service -->
   <service>
     <type>_https._tcp</type>
-    <port>{{ gsender_nginx_port }}</port>
+    <port>443</port>
     <txt-record>path=/</txt-record>
     <txt-record>description=gSender CNC Control Web Interface</txt-record>
   </service>
@@ -16,7 +16,7 @@
   <!-- HTTP Service (redirect to HTTPS) -->
   <service>
     <type>_http._tcp</type>
-    <port>{{ gsender_nginx_http_port }}</port>
+    <port>80</port>
     <txt-record>path=/</txt-record>
     <txt-record>description=gSender CNC Control (redirects to HTTPS)</txt-record>
   </service>
