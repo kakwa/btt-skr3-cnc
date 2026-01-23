@@ -44,6 +44,10 @@ Screenshots
 
 ## Grbhal Build
 
+TODO: need to package plateformio
 
+```
+git submodule update --init --recursive
+```
 
 
