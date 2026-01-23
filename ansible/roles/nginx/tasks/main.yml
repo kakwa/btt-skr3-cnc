@@ -1,0 +1,84 @@
+---
+# Install and configure nginx as a reverse proxy
+
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  when: nginx_enabled
+
+- name: Create SSL certificate directory
+  file:
+    path: /etc/ssl/private
+    state: directory
+    mode: '0755'
+  when: nginx_enabled and nginx_ssl_enabled
+
+- name: Check if SSL certificate exists
+  stat:
+    path: "{{ nginx_ssl_cert_path }}"
+  register: ssl_cert_stat
+  when: nginx_enabled and nginx_ssl_enabled
+
+- name: Generate self-signed SSL certificate
+  command: >
+    openssl req -x509 -nodes -days {{ nginx_ssl_days_valid }}
+    -newkey rsa:2048
+    -keyout {{ nginx_ssl_key_path }}
+    -out {{ nginx_ssl_cert_path }}
+    -subj "/C={{ nginx_ssl_country }}/ST={{ nginx_ssl_state }}/L={{ nginx_ssl_locality }}/O={{ nginx_ssl_organization }}/CN={{ nginx_ssl_common_name }}"
+  when: >
+    nginx_enabled and
+    nginx_ssl_enabled and
+    nginx_ssl_generate_selfsigned and
+    not ssl_cert_stat.stat.exists
+
+- name: Set SSL certificate permissions
+  file:
+    path: "{{ nginx_ssl_cert_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  when: nginx_enabled and nginx_ssl_enabled
+
+- name: Set SSL key permissions
+  file:
+    path: "{{ nginx_ssl_key_path }}"
+    owner: root
+    group: root
+    mode: '0600'
+  when: nginx_enabled and nginx_ssl_enabled
+
+- name: Create nginx site configuration
+  template:
+    src: reverse-proxy.conf.j2
+    dest: "/etc/nginx/sites-available/{{ nginx_site_name }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart nginx
+  when: nginx_enabled
+
+- name: Enable nginx site configuration
+  file:
+    src: "/etc/nginx/sites-available/{{ nginx_site_name }}"
+    dest: "/etc/nginx/sites-enabled/{{ nginx_site_name }}"
+    state: link
+  notify: restart nginx
+  when: nginx_enabled
+
+- name: Remove default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+  when: nginx_enabled and nginx_remove_default_site
+
+- name: Enable and start nginx
+  systemd:
+    name: nginx
+    enabled: yes
+    state: started
+  when: nginx_enabled

@@ -15,19 +15,6 @@ gsender_allow_remote_access: true
 gsender_controller: "grblHAL"  # Options: Grbl, grblHAL, or empty string
 gsender_config_file: "{{ gsender_home }}/.cncrc"
 
-# Nginx reverse proxy configuration
-gsender_enable_nginx: true
-gsender_nginx_port: 443
-gsender_nginx_http_port: 80
-gsender_ssl_cert_path: "/etc/ssl/certs/gsender-selfsigned.crt"
-gsender_ssl_key_path: "/etc/ssl/private/gsender-selfsigned.key"
-gsender_ssl_country: "US"
-gsender_ssl_state: "State"
-gsender_ssl_locality: "City"
-gsender_ssl_organization: "Home"
-gsender_ssl_common_name: "{{ ansible_hostname }}.local"
-gsender_ssl_days_valid: 3650  # 10 years
-
 # Avahi service announcement
 gsender_enable_avahi: true
 gsender_avahi_service_name: "gSender CNC Control"

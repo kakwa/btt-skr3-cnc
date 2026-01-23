@@ -1,0 +1,65 @@
+---
+# Nginx reverse proxy role defaults
+
+# Whether to enable nginx
+nginx_enabled: true
+
+# Nginx upstream configuration
+nginx_upstream_host: "127.0.0.1"
+nginx_upstream_port: "8000"
+
+# Nginx listening ports
+nginx_https_port: 443
+nginx_http_port: 80
+nginx_redirect_http_to_https: true
+
+# Site configuration name
+nginx_site_name: "gsender"
+
+# Whether to remove the default nginx site
+nginx_remove_default_site: true
+
+# SSL certificate configuration
+nginx_ssl_enabled: true
+nginx_ssl_cert_path: "/etc/ssl/certs/gsender-selfsigned.crt"
+nginx_ssl_key_path: "/etc/ssl/private/gsender-selfsigned.key"
+
+# Self-signed certificate generation
+nginx_ssl_generate_selfsigned: true
+nginx_ssl_country: "US"
+nginx_ssl_state: "State"
+nginx_ssl_locality: "City"
+nginx_ssl_organization: "CNC"
+nginx_ssl_common_name: "{{ ansible_hostname }}.local"
+nginx_ssl_days_valid: 3650  # 10 years
+
+# Server names
+nginx_server_names:
+  - "{{ ansible_hostname }}.local"
+  - "{{ ansible_hostname }}"
+
+# Logging
+nginx_access_log: "/var/log/nginx/{{ nginx_site_name }}-access.log"
+nginx_error_log: "/var/log/nginx/{{ nginx_site_name }}-error.log"
+
+# Client settings
+nginx_client_max_body_size: "100M"
+
+# WebSocket support
+nginx_websocket_support: true
+
+# Proxy timeouts
+nginx_proxy_connect_timeout: "60s"
+nginx_proxy_send_timeout: "300s"
+nginx_proxy_read_timeout: "300s"
+
+# Proxy buffering
+nginx_proxy_buffering: "off"
+nginx_proxy_request_buffering: "off"
+
+# Security headers
+nginx_security_headers:
+  - "Strict-Transport-Security \"max-age=31536000; includeSubDomains\" always"
+  - "X-Frame-Options \"SAMEORIGIN\" always"
+  - "X-Content-Type-Options \"nosniff\" always"
+  - "X-XSS-Protection \"1; mode=block\" always"
