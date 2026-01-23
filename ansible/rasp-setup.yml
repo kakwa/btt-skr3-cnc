@@ -23,6 +23,5 @@
     - { role: rsyslog, tags: ["system", "rsyslog"] }
     - { role: avahi, tags: ["system", "network", "avahi"] }
     - { role: nginx, tags: ["system", "network", "nginx"] }
-    - { role: grblhal-builder, tags: ["development", "grblhal"] }
     - { role: gsender, tags: ["apps", "gsender"] }
-    - { roles: grblhal, tags: ["apps", "grblhal"] }
+    - { role: grblhal-builder, tags: ["development", "grblhal"] }
