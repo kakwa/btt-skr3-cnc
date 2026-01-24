@@ -37,6 +37,70 @@
     cache_valid_time: 3600
   when: grblhal_install_build_tools
 
+- name: Setup PlatformIO toolchain workaround for ARM64 Linux
+  block:
+    - name: Create PlatformIO toolchain symlink directory
+      file:
+        path: "{{ item }}/.platformio/packages/toolchain-gccarmnoneeabi/bin"
+        state: directory
+        owner: "{{ item.split('/')[-1] if item != '/root' else 'root' }}"
+        mode: '0755'
+      loop:
+        - "/root"
+        - "/home/{{ grblhal_build_user }}"
+      when: ansible_architecture == "aarch64"
+
+    - name: Create symlinks to system ARM GCC toolchain
+      shell: |
+        for f in /usr/bin/arm-none-eabi-*; do
+          if [ -f "$f" ]; then
+            ln -sf "$f" "{{ item }}/.platformio/packages/toolchain-gccarmnoneeabi/bin/"
+          fi
+        done
+      args:
+        creates: "{{ item }}/.platformio/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-gcc"
+      loop:
+        - "/root"
+        - "/home/{{ grblhal_build_user }}"
+      when: ansible_architecture == "aarch64"
+
+    - name: Create package.json for system toolchain
+      copy:
+        content: |
+          {
+            "name": "toolchain-gccarmnoneeabi",
+            "version": "1.70301.190214",
+            "description": "System ARM GCC toolchain (symlinked)",
+            "keywords": ["toolchain", "build tools", "compiler", "assembler", "linker", "preprocessor"],
+            "homepage": "https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm",
+            "license": "GPL-2.0-or-later",
+            "system": ["*"]
+          }
+        dest: "{{ item }}/.platformio/packages/toolchain-gccarmnoneeabi/package.json"
+        owner: "{{ item.split('/')[-1] if item != '/root' else 'root' }}"
+        mode: '0644'
+      loop:
+        - "/root"
+        - "/home/{{ grblhal_build_user }}"
+      when: ansible_architecture == "aarch64"
+
+    - name: Initialize PlatformIO to install ststm32 platform
+      command: platformio platform install ststm32
+      args:
+        creates: /root/.platformio/platforms/ststm32
+      become: yes
+      become_user: root
+      when: ansible_architecture == "aarch64"
+
+    - name: Patch ststm32 platform.json to remove toolchain version constraint
+      replace:
+        path: /root/.platformio/platforms/ststm32/platform.json
+        regexp: '"version": ">=1\.60301\.0,<1\.80000\.0"'
+        replace: '"version": "*"'
+        backup: yes
+      when: ansible_architecture == "aarch64"
+  when: grblhal_install_build_tools and ansible_architecture == "aarch64"
+
 - name: Install stlink tools for flashing
   apt:
     name:

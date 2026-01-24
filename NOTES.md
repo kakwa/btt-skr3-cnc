@@ -50,4 +50,40 @@ TODO: need to package plateformio
 git submodule update --init --recursive
 ```
 
+### Building on ARM64 Linux (Raspberry Pi, etc.)
+
+PlatformIO doesn't provide pre-built ARM GCC toolchain packages for `linux_aarch64`. The Ansible playbook includes a workaround that:
+
+1. Installs the system ARM GCC toolchain via `apt install gcc-arm-none-eabi`
+2. Creates symlinks in PlatformIO's package directory pointing to the system toolchain
+3. Patches the ststm32 platform configuration to accept any toolchain version
+
+This workaround is automatically applied when running the Ansible playbook on ARM64 systems. The build scripts (`skr3-build`) also include runtime checks to ensure the workaround is in place.
+
+**Manual workaround** (if needed):
+
+```bash
+# Create symlinks to system toolchain
+mkdir -p ~/.platformio/packages/toolchain-gccarmnoneeabi/bin
+for f in /usr/bin/arm-none-eabi-*; do
+  ln -sf "$f" ~/.platformio/packages/toolchain-gccarmnoneeabi/bin/
+done
+
+# Create package.json
+cat > ~/.platformio/packages/toolchain-gccarmnoneeabi/package.json << 'EOF'
+{
+  "name": "toolchain-gccarmnoneeabi",
+  "version": "1.70301.190214",
+  "description": "System ARM GCC toolchain (symlinked)",
+  "keywords": ["toolchain"],
+  "license": "GPL-2.0-or-later",
+  "system": ["*"]
+}
+EOF
+
+# Patch platform.json (after first platformio run)
+sudo sed -i 's/"version": ">=1.60301.0,<1.80000.0"/"version": "*"/' \
+  /root/.platformio/platforms/ststm32/platform.json
+```
+
 

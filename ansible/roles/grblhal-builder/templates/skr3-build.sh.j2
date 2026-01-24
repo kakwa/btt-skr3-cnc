@@ -41,6 +41,36 @@ if [ ! -f "platformio.ini" ]; then
     exit 1
 fi
 
+# Workaround for ARM64 Linux: Create symlinks to system ARM toolchain
+# PlatformIO doesn't provide pre-built toolchain packages for linux_aarch64
+TOOLCHAIN_DIR="$HOME/.platformio/packages/toolchain-gccarmnoneeabi"
+if [ ! -d "$TOOLCHAIN_DIR/bin" ]; then
+    echo -e "${YELLOW}Setting up system ARM toolchain for PlatformIO (ARM64 workaround)...${NC}"
+    mkdir -p "$TOOLCHAIN_DIR/bin"
+
+    # Create symlinks to system ARM GCC toolchain
+    for f in /usr/bin/arm-none-eabi-*; do
+        if [ -f "$f" ]; then
+            ln -sf "$f" "$TOOLCHAIN_DIR/bin/"
+        fi
+    done
+
+    # Create package.json to mark toolchain as installed
+    cat > "$TOOLCHAIN_DIR/package.json" << 'PKGJSON'
+{
+  "name": "toolchain-gccarmnoneeabi",
+  "version": "1.70301.0",
+  "description": "System ARM GCC toolchain (symlinked)",
+  "keywords": ["toolchain", "build tools", "compiler", "assembler", "linker", "preprocessor"],
+  "homepage": "https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm",
+  "license": "GPL-2.0-or-later",
+  "system": "*"
+}
+PKGJSON
+
+    echo -e "${GREEN}System ARM toolchain linked successfully${NC}"
+fi
+
 echo -e "${GREEN}Building with PlatformIO...${NC}"
 platformio run "$@"
 
@@ -49,7 +79,7 @@ FIRMWARE=$(find .pio/build -name "*.bin" | head -n 1)
 if [ -n "$FIRMWARE" ]; then
     echo -e "${GREEN}Build successful!${NC}"
     echo -e "${GREEN}Firmware: $FIRMWARE${NC}"
-    
+
     # Copy to build directory with timestamp
     TIMESTAMP=$(date +%Y%m%d_%H%M%S)
     cp "$FIRMWARE" "$BUILD_DIR/firmware_${TIMESTAMP}.bin"
