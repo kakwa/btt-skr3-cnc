@@ -140,6 +140,16 @@
       - "--exclude=*.elf"
       - "--exclude=*.bin"
       - "--exclude=*.hex"
+      - "--exclude=my_machine.h"
+  when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
+
+- name: Deploy custom my_machine.h configuration
+  copy:
+    src: my_machine.h
+    dest: "{{ grblhal_source_dir }}/my_machine.h"
+    owner: "{{ grblhal_build_user }}"
+    group: "{{ grblhal_build_group }}"
+    mode: '0644'
   when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
 
 - name: Display warning if local sources not found
