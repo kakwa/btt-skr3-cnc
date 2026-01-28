@@ -101,10 +101,10 @@
       when: ansible_architecture == "aarch64"
   when: grblhal_install_build_tools and ansible_architecture == "aarch64"
 
-- name: Install stlink tools for flashing
+- name: Install DFU flash tools
   apt:
     name:
-      - stlink-tools
+      - dfu-util
     state: present
     update_cache: yes
     cache_valid_time: 3600
@@ -146,7 +146,7 @@
 - name: Deploy custom my_machine.h configuration
   copy:
     src: my_machine.h
-    dest: "{{ grblhal_source_dir }}/my_machine.h"
+    dest: "{{ grblhal_source_dir }}/Inc/my_machine.h"
     owner: "{{ grblhal_build_user }}"
     group: "{{ grblhal_build_group }}"
     mode: '0644'
@@ -224,14 +224,17 @@
       - "Build directory: {{ grblhal_build_dir }}"
       - "Target board: {{ grblhal_board }}"
       - "MCU: {{ grblhal_mcu }}"
+      - "PlatformIO environment: {{ grblhal_platformio_env }}"
       - ""
       - "Helper scripts installed:"
       - "  - skr3-build    Build the firmware"
-      - "  - skr3-flash    Flash the firmware (stlink-tools)"
+      - "  - skr3-flash    Flash the firmware via USB (DFU)"
       - ""
       - "Usage:"
-      - "  skr3-build              # Build firmware"
-      - "  skr3-flash              # Flash latest firmware"
-      - "  skr3-flash custom.bin   # Flash specific firmware"
+      - "  skr3-build                    # Build firmware"
+      - "  skr3-flash                    # Flash latest firmware (interactive)"
+      - "  skr3-flash custom.bin         # Flash specific firmware file"
+      - ""
+      - "The flash script will guide you through the DFU bootloader process."
       - "========================================"
   when: grblhal_install_build_tools

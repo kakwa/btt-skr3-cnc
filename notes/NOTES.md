@@ -42,12 +42,22 @@ TODO: gsender setup (package ansible role nginx xwfb/xvfb hacks, importance of v
 
 Screenshots 
 
-## Grbhal Build
+## grblHAL Build and Flash
 
-TODO: need to package plateformio
+**See [BUILD_FLASH.md](BUILD_FLASH.md) for complete build and flash instructions.**
 
+Quick commands:
+```bash
+skr3-build    # Build firmware
+skr3-flash    # Flash via DFU (interactive)
 ```
+
+### Initial Setup
+
+```bash
 git submodule update --init --recursive
+cd ansible
+ansible-playbook -i inventory rasp-setup.yml
 ```
 
 ### Building on ARM64 Linux (Raspberry Pi, etc.)

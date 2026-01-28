@@ -18,6 +18,7 @@ echo -e "${GREEN}======================================${NC}"
 echo -e "${GREEN}SKR3 Build Script${NC}"
 echo -e "${GREEN}Target Board: {{ grblhal_board }}${NC}"
 echo -e "${GREEN}MCU: {{ grblhal_mcu }}${NC}"
+echo -e "${GREEN}PlatformIO Env: {{ grblhal_platformio_env }}${NC}"
 echo -e "${GREEN}======================================${NC}"
 echo
 
@@ -72,10 +73,11 @@ PKGJSON
 fi
 
 echo -e "${GREEN}Building with PlatformIO...${NC}"
-platformio run "$@"
+echo -e "${YELLOW}Target environment: {{ grblhal_platformio_env }}${NC}"
+platformio run -e {{ grblhal_platformio_env }} "$@"
 
-# Find the firmware binary
-FIRMWARE=$(find .pio/build -name "*.bin" | head -n 1)
+# Find the firmware binary in the specific environment build directory
+FIRMWARE=$(find .pio/build/{{ grblhal_platformio_env }} -name "*.bin" | head -n 1)
 if [ -n "$FIRMWARE" ]; then
     echo -e "${GREEN}Build successful!${NC}"
     echo -e "${GREEN}Firmware: $FIRMWARE${NC}"

@@ -15,6 +15,7 @@ grblhal_local_source: "{{ playbook_dir }}/../grblhal"
 # Target board configuration
 grblhal_board: "BTT_SKR_3_EZ"
 grblhal_mcu: "STM32H7xx"
+grblhal_platformio_env: "btt_skr_30_h723_tmc5160_bl128"
 
 # ARM toolchain version (use 'present' for distro version)
 grblhal_arm_toolchain_state: present
@@ -23,6 +24,3 @@ grblhal_arm_toolchain_state: present
 grblhal_install_build_tools: true
 grblhal_install_flash_tools: true
 grblhal_deploy_sources: true
-
-# Flash tool: stlink-tools (hardcoded)
-grblhal_flash_tool: "stlink"
