@@ -91,7 +91,7 @@ ls /dev/ttyACM*           # Serial device (usually /dev/ttyACM0)
 | Board | BTT SKR 3 |
 | MCU | STM32H723VG |
 | Bootloader | 128KB (factory) |
-| Drivers | TMC5160 (SPI) |
+| Drivers | TMC5160 (UART mode) |
 | Flash Address | 0x08020000 |
 | PlatformIO Env | `btt_skr_30_h723_tmc5160_bl128` |
 
@@ -103,10 +103,13 @@ Located at: `ansible/roles/grblhal-builder/files/my_machine.h`
 
 Key settings:
 - **Board:** `BOARD_BTT_SKR_30`
-- **Drivers:** TMC5160 with UART enabled
-- **Motors:** X and Y ganged with auto-squaring
+- **Drivers:** TMC5160 with UART mode enabled (`TRINAMIC_UART_ENABLE 1`)
+- **Motors:** X and Y ganged with auto-squaring (5 motors total)
 - **Spindle:** PWM spindle enabled
 - **Probe:** Enabled
+- **Control:** E-STOP enabled (requires NC button on EXP2 pin 7)
+
+**Important:** UART mode requires PDN_UART jumpers installed on all driver sockets. See [WIRING.md](WIRING.md) for jumper configuration.
 
 This file is deployed separately and **not synced from upstream** to preserve your custom settings.
 
@@ -223,8 +226,17 @@ grblhal_platformio_env: "btt_skr_30_h723_tmc5160"
 
 Then re-run the Ansible playbook to update the build script.
 
+## Next Steps
+
+After successfully flashing firmware:
+1. Wire your hardware - see [WIRING.md](WIRING.md)
+2. Test and troubleshoot - see [TESTING_TROUBLESHOOTING.md](TESTING_TROUBLESHOOTING.md)
+3. Configure grblHAL settings for your machine
+
 ## References
 
+- [WIRING.md](WIRING.md) - Hardware wiring guide
+- [TESTING_TROUBLESHOOTING.md](TESTING_TROUBLESHOOTING.md) - Testing and troubleshooting
 - [grblHAL GitHub](https://github.com/grblHAL)
 - [BTT SKR 3 Documentation](https://github.com/bigtreetech/SKR-3)
 - [dfu-util Documentation](http://dfu-util.sourceforge.net/)

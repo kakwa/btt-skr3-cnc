@@ -63,8 +63,18 @@
 #define SPINDLE_PWM           1
 
 // VFD spindle via Modbus/RS-485:
-//#define SPINDLE0_ENABLE         SPINDLE_HUANYANG1 // VFD spindle via Modbus (requires MODBUS_ENABLE)
+// To use Modbus, uncomment the lines below and rebuild
+//#define MODBUS_RTU_STREAM       0 // 0 = SERIAL (TFT header), 1 = SERIAL1 (ESP-32 header)
 //#define MODBUS_ENABLE           1 // Set to 1 for auto direction, 2 for direction signal on auxiliary output pin.
+//#define SPINDLE0_ENABLE         SPINDLE_HUANYANG1 // VFD spindle via Modbus (requires MODBUS_ENABLE)
+//
+// MODBUS_RTU_STREAM options:
+//   0 = Use SERIAL port (TFT header: PA9/PA10) - USB CDC will be disabled
+//   1 = Use SERIAL1 port (ESP-32 header: PD8/PD9) - Keeps TFT header for debug
+//
+// MODBUS_ENABLE options:
+//   1 = Auto direction (single RS-485 transceiver, switches TX/RX automatically)
+//   2 = Manual direction (requires external direction control signal)
 
 // ============================================================================
 // Probe, LIMITS and FANS OPTIONS

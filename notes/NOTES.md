@@ -42,6 +42,12 @@ TODO: gsender setup (package ansible role nginx xwfb/xvfb hacks, importance of v
 
 Screenshots 
 
+## Documentation
+
+- **[WIRING.md](WIRING.md)** - Complete wiring guide for BTT SKR 3 with grblHAL
+- **[BUILD_FLASH.md](BUILD_FLASH.md)** - Build and flash instructions
+- **[TESTING_TROUBLESHOOTING.md](TESTING_TROUBLESHOOTING.md)** - Testing procedures, troubleshooting, and safety
+
 ## grblHAL Build and Flash
 
 **See [BUILD_FLASH.md](BUILD_FLASH.md) for complete build and flash instructions.**
