@@ -141,12 +141,22 @@
       - "--exclude=*.bin"
       - "--exclude=*.hex"
       - "--exclude=my_machine.h"
+      - "--exclude=platformio.ini"
   when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
 
 - name: Deploy custom my_machine.h configuration
   copy:
     src: my_machine.h
     dest: "{{ grblhal_source_dir }}/Inc/my_machine.h"
+    owner: "{{ grblhal_build_user }}"
+    group: "{{ grblhal_build_group }}"
+    mode: '0644'
+  when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
+
+- name: Deploy custom platformio.ini configuration
+  copy:
+    src: platformio.ini
+    dest: "{{ grblhal_source_dir }}/platformio.ini"
     owner: "{{ grblhal_build_user }}"
     group: "{{ grblhal_build_group }}"
     mode: '0644'

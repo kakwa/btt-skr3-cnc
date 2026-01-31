@@ -25,29 +25,28 @@
 #define BOARD_BTT_SKR_30      // BTT SKR V3 board.
 
 // ============================================================================
+// CUSTOM BUILD INFO
+// ============================================================================
+// Custom version string that appears in $I command
+#define GRBL_BUILD_INFO "BTT-SKR3-TMC5160-SPI-XY-GANGED"
+
+// ============================================================================
 // MOTOR CONFIGURATION
 // ============================================================================
-// Number of additional ABC motors (max 2 on BTT SKR 3 for ganging)
-#define N_ABC_MOTORS        2     // Required for X_GANGED and Y_GANGED
-
-// Trinamic TMC5160 stepper drivers
-#define TRINAMIC_ENABLE       5160 // Trinamic TMC5160 stepper driver support.
-#define TRINAMIC_R_SENSE      75  // R sense resistance in milliohms. 5160 default is 75.
-#define TRINAMIC_UART_ENABLE  1
-
-#define M3_AVAILABLE          1
-#define M4_AVAILABLE          1
-
-#define PROBE_ENABLE          1
-
 // Ganged/dual motor axes (BTT SKR 3 supports up to 5 motors: X, Y, Z + 2 additional)
+// NOTE: N_ABC_MOTORS is calculated automatically as (N_ABC_AXIS + N_GANGED)
+//       where N_GANGED = X_GANGED + Y_GANGED + Z_GANGED
 #define X_GANGED            1
 #define X_AUTO_SQUARE       1
 #define Y_GANGED            1
 #define Y_AUTO_SQUARE       1
-# Enable UART on the E1 and E2 controllers
-#define M3_AVAILABLE        1
-#define M4_AVAILABLE        1
+
+// Trinamic TMC5160 stepper drivers
+#define TRINAMIC_ENABLE       5160 // Trinamic TMC5160 stepper driver support.
+#define TRINAMIC_R_SENSE      75  // R sense resistance in milliohms. 5160 default is 75.
+#define TRINAMIC_SPI_ENABLE   1   // Use SPI mode (BTT SKR-3 uses software SPI)
+
+#define PROBE_ENABLE          1
 
 // ============================================================================
 // SPINDLE CONFIGURATION
