@@ -46,6 +46,39 @@
 #define TRINAMIC_R_SENSE      75  // R sense resistance in milliohms. 5160 default is 75.
 #define TRINAMIC_SPI_ENABLE   1   // Use SPI mode (BTT SKR-3 uses software SPI)
 
+// Motor current settings (mA RMS)
+// TMC5160 supports up to 3000mA per motor, but actual limit depends on:
+// - Motor specifications (check motor datasheet)
+// - Cooling (heatsinks required for high current)
+// - Power supply capacity
+// Typical values: 800-1500mA for NEMA 23, 1500-2500mA for NEMA 34
+// OPTIMIZED FOR TORQUE: 2.5A current with SpreadCycle and lower microstepping
+#define DEFAULT_X_CURRENT     2500.0f // X axis motor current (mA RMS)
+#define DEFAULT_Y_CURRENT     2500.0f // Y axis motor current (mA RMS)
+#define DEFAULT_Z_CURRENT     2500.0f // Z axis motor current (mA RMS)
+#define DEFAULT_A_CURRENT     2500.0f // X2 ganged motor current (mA RMS)
+#define DEFAULT_B_CURRENT     2500.0f // Y2 ganged motor current (mA RMS)
+
+// Hold current percentage (0-100%)
+// Higher percentage = more holding torque (important for vertical Z-axis)
+// 75% = three-quarters power when holding position (optimized for torque)
+#define TMC_X_HOLD_CURRENT_PCT 75
+#define TMC_Y_HOLD_CURRENT_PCT 75
+#define TMC_Z_HOLD_CURRENT_PCT 75
+#define TMC_A_HOLD_CURRENT_PCT 75
+#define TMC_B_HOLD_CURRENT_PCT 75
+
+// Microstepping (1, 2, 4, 8, 16, 32, 64, 128, 256)
+// Lower values = more torque per step (8 microsteps = 2x torque vs 16)
+// Trade-off: slightly less smooth motion, but significantly more power
+#define TRINAMIC_DEFAULT_MICROSTEPS 8
+
+// StealthChop mode (0 = SpreadCycle/CoolStep, 1 = StealthChop)
+// SpreadCycle: Maximum torque at all speeds (louder but stronger)
+// StealthChop: Silent but reduced torque
+// OPTIMIZED FOR TORQUE: Using SpreadCycle (0)
+#define TMC_STEALTHCHOP 0
+
 #define PROBE_ENABLE          1
 
 // ============================================================================
