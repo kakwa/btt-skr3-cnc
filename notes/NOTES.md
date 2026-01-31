@@ -102,4 +102,4 @@ sudo sed -i 's/"version": ">=1.60301.0,<1.80000.0"/"version": "*"/' \
   /root/.platformio/platforms/ststm32/platform.json
 ```
 
-
+TODO: notes about ganged + plateformio disabling the `my_machine.h`
