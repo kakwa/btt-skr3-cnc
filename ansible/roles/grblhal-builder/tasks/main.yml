@@ -153,13 +153,12 @@
     mode: '0644'
   when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
 
-- name: Deploy custom platformio.ini configuration
-  copy:
-    src: platformio.ini
-    dest: "{{ grblhal_source_dir }}/platformio.ini"
-    owner: "{{ grblhal_build_user }}"
-    group: "{{ grblhal_build_group }}"
-    mode: '0644'
+- name: Remove OVERRIDE_MY_MACHINE from platformio.ini to use custom my_machine.h
+  replace:
+    path: "{{ grblhal_source_dir }}/platformio.ini"
+    regexp: '^\s*-D OVERRIDE_MY_MACHINE\s*$'
+    replace: '  # -D OVERRIDE_MY_MACHINE removed to use custom my_machine.h'
+    backup: yes
   when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
 
 - name: Display warning if local sources not found
