@@ -48,7 +48,7 @@
       loop:
         - "/root"
         - "/home/{{ grblhal_build_user }}"
-      when: ansible_architecture == "aarch64"
+      when: ansible_facts['architecture'] == "aarch64"
 
     - name: Create symlinks to system ARM GCC toolchain
       shell: |
@@ -62,7 +62,7 @@
       loop:
         - "/root"
         - "/home/{{ grblhal_build_user }}"
-      when: ansible_architecture == "aarch64"
+      when: ansible_facts['architecture'] == "aarch64"
 
     - name: Create package.json for system toolchain
       copy:
@@ -82,7 +82,7 @@
       loop:
         - "/root"
         - "/home/{{ grblhal_build_user }}"
-      when: ansible_architecture == "aarch64"
+      when: ansible_facts['architecture'] == "aarch64"
 
     - name: Initialize PlatformIO to install ststm32 platform
       command: platformio platform install ststm32
@@ -90,7 +90,7 @@
         creates: /root/.platformio/platforms/ststm32
       become: yes
       become_user: root
-      when: ansible_architecture == "aarch64"
+      when: ansible_facts['architecture'] == "aarch64"
 
     - name: Patch ststm32 platform.json to remove toolchain version constraint
       replace:
@@ -98,8 +98,8 @@
         regexp: '"version": ">=1\.60301\.0,<1\.80000\.0"'
         replace: '"version": "*"'
         backup: yes
-      when: ansible_architecture == "aarch64"
-  when: grblhal_install_build_tools and ansible_architecture == "aarch64"
+      when: ansible_facts['architecture'] == "aarch64"
+  when: grblhal_install_build_tools and ansible_facts['architecture'] == "aarch64"
 
 - name: Install DFU flash tools
   apt:
