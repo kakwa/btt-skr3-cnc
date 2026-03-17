@@ -21,18 +21,45 @@ git submodule update --init --recursive
 
 ## Pi Preparation
 
-### Flashing
+### SDCard Flashing
 
-TODO Rasp link
-TODO Other option, BTT Pi (because 24V) Link to ARMBIAN instruction
+Flash the OS to an SD card. Choose one of:
 
-### Enable Root Login & SSH key
+- **Raspberry Pi**: Use Raspberry Pi Imager - https://www.raspberrypi.com/software/
+- **BTT Pi** (cheap & 24V, no 5V required): Use Armbian - https://www.armbian.com/bigtreetech-cb1/
 
-TODO (Find IP of BTT Pi or RASP Pi (linux command look for MAC Address prefix BTT -> 26:a4:ec:e1:be:61)
+### Initial Setup
 
-### Wifi Configuration
+**Find Pi IP Address:**
 
-TODO nmtui
+```bash
+# Scan network for Pi by MAC address prefix
+ip neigh | grep -E 'b8:27:eb|dc:a6:32|e4:5f:01|26:a4:ec'
+```
+
+**Configure WiFi (if needed):**
+
+```bash
+ssh root@<PI_IP>
+sudo nmtui
+```
+
+**Enable SSH root login:**
+
+```bash
+# Enable root login in SSH config
+sudo sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+```
+
+**Setup SSH key for passwordless access:**
+
+```bash
+# On your local machine, create SSH key if you don't have one
+ssh-keygen
+# Copy key to Pi
+ssh-copy-id root@<PI_IP>
+```
 
 ## Configuration & MCU Firmware + Flashing Tool
 
