@@ -30,13 +30,13 @@ nginx_ssl_country: "US"
 nginx_ssl_state: "State"
 nginx_ssl_locality: "City"
 nginx_ssl_organization: "CNC"
-nginx_ssl_common_name: "{{ ansible_hostname }}.local"
+nginx_ssl_common_name: "{{ ansible_facts['hostname'] }}.local"
 nginx_ssl_days_valid: 3650  # 10 years
 
 # Server names
 nginx_server_names:
-  - "{{ ansible_hostname }}.local"
-  - "{{ ansible_hostname }}"
+  - "{{ ansible_facts['hostname'] }}.local"
+  - "{{ ansible_facts['hostname'] }}"
 
 # Logging
 nginx_access_log: "/var/log/nginx/{{ nginx_site_name }}-access.log"
