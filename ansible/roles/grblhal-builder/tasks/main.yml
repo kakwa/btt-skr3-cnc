@@ -141,7 +141,6 @@
       - "--exclude=*.bin"
       - "--exclude=*.hex"
       - "--exclude=my_machine.h"
-      - "--exclude=platformio.ini"
   when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
 
 - name: Deploy custom my_machine.h configuration
