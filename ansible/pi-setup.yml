@@ -1,8 +1,7 @@
 ---
 - name: Setup BTT SKR3 CNC Machine
-  hosts: localhost
-  become: true
-  connection: local
+  hosts: all
+  #become: true
 
   vars:
     # Avahi configuration (for mDNS/SSH announcement)
@@ -12,12 +11,6 @@
     avahi_service_state: started
   
   roles:
-    # Base roles from external/ansible submodule (kakwa's roles)
-    - { role: misc-base, tags: ["system", "misc-base"] }
-    - { role: vim, tags: ["system", "vim"] }
-    - { role: zsh, tags: ["system", "zsh"] }
-    - { role: users, tags: ["system", "users"] }
-    
     # Local custom roles
     - { role: hostname, tags: ["system", "hostname"] }
     - { role: rsyslog, tags: ["system", "rsyslog"] }
