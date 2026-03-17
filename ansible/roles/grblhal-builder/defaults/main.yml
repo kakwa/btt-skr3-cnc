@@ -2,8 +2,8 @@
 # grblHAL build tools configuration
 
 # Build tools user
-grblhal_build_user: "{{ ansible_facts['user_id'] }}"
-grblhal_build_group: "{{ ansible_facts['user_id'] }}"
+grblhal_build_user: root
+grblhal_build_group: root
 
 # Installation paths
 grblhal_source_dir: "/opt/grblhal"
