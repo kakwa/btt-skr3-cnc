@@ -14,6 +14,7 @@
     # Local custom roles
     - { role: hostname, tags: ["system", "hostname"] }
     - { role: rsyslog, tags: ["system", "rsyslog"] }
+    - { role: repos, tags: ["system", "repos"] }
     - { role: avahi, tags: ["system", "network", "avahi"] }
     - { role: nginx, tags: ["system", "network", "nginx"] }
     - { role: gsender, tags: ["apps", "gsender"] }
