@@ -8,6 +8,11 @@
     update_cache: yes
     cache_valid_time: 3600
 
+- name: Install xauth for virtual X11 display
+  apt:
+    name: xauth
+    state: present
+
 - name: Check if gSender is already installed
   command: dpkg-query -W -f='${Version}' gsender
   register: gsender_installed_version
