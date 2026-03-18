@@ -117,3 +117,64 @@ PLAY RECAP *********************************************************************
 ```
 
 ### Flashing the MCU
+
+Connect as root on the PI:
+
+```bash
+# or get a root shell another way
+ssh root@<PI_IP>
+```
+
+Compiling grblhal using the [build helper script](TODO):
+
+```bash
+skr3-build
+```
+
+You should get an output similar to:
+
+```
+[...]
+======================================================== 1 succeeded in 00:11:29.833 ========================================================
+Build successful!
+Firmware: .pio/build/btt_skr_30_h723_tmc5160_bl128/firmware.bin
+Firmware copied to: /opt/grblhal/build/firmware_latest.bin
+
+======================================
+Build Complete!
+======================================
+```
+
+Finally, locate teh boot and reset button on the SKR3/MCU board,
+and then flash grblhal on the MCU using [flashing helper script](TODO) :
+
+```bash
+# Run the script and follow the instructions
+skr3-flash
+```
+
+
+You should get an output similar to:
+
+```
+[...]
+═══════════════════════════════════════
+  Flash Complete! ✓
+═══════════════════════════════════════
+
+To start the new firmware:
+
+Press the RESET button on the board
+        Press any key after you've pressed RESET...
+
+Waiting for board to restart...
+✓ Board is running! (Virtual COM Port detected)
+✓ Serial device: /dev/ttyACM0
+
+You can now connect to grblHAL via /dev/ttyACM0
+
+
+
+# Wiring
+
+TODO
