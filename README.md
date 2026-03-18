@@ -63,6 +63,8 @@ ssh-copy-id root@<PI_IP>
 
 ## Configuration & MCU Firmware + Flashing Tool
 
+### Installing The PI Stuff
+
 ```bash
 # Raspberry Pi IP Address Discovery
 export PI_IP=$(ip neigh | awk '/b8:27:eb|dc:a6:32|e4:5f:01/ {print $1, $5}')
@@ -78,3 +80,40 @@ cd ansible/
 # Run Playbook
 ansible-playbook -i "${PI_IP}," -u root pi-setup.yml
 ```
+
+if everything went well, at the end you should get:
+
+```
+[...]
+
+TASK [grblhal-builder : Display helper scripts information] **********************************
+ok: [192.168.1.46] => {
+    "msg": [
+        "========================================",
+        "grblHAL Build Environment Ready!",
+        "========================================",
+        "Source directory: /opt/grblhal",
+        "Build directory: /opt/grblhal/build",
+        "Target board: BTT_SKR_3_EZ",
+        "MCU: STM32H7xx",
+        "PlatformIO environment: btt_skr_30_h723_tmc5160_bl128",
+        "",
+        "Helper scripts installed:",
+        "  - skr3-build    Build the firmware",
+        "  - skr3-flash    Flash the firmware via USB (DFU)",
+        "",
+        "Usage:",
+        "  skr3-build                    # Build firmware",
+        "  skr3-flash                    # Flash latest firmware (interactive)",
+        "  skr3-flash custom.bin         # Flash specific firmware file",
+        "",
+        "The flash script will guide you through the DFU bootloader process.",
+        "========================================"
+    ]
+}
+
+PLAY RECAP ***********************************************************************************
+192.168.1.46               : ok=10   changed=57    unreachable=0    failed=0    skipped=6    rescued=0    ignored=0
+```
+
+### Flashing the MCU
