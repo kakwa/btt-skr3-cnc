@@ -127,7 +127,9 @@
 #define DEFAULT_Z_MAX_TRAVEL 130.0f
 
 //#define FANS_ENABLE             1 // Enable fan control via M106/M107.
-//#define SAFETY_DOOR_ENABLE      1
+#define SAFETY_DOOR_ENABLE      1  // Use the Safety Door Pin for the collision detection bar switch on PA7 (EXP2 pin 5)
+// Safety door/collision input: Normally Open (NO) — invert so closed = trigger
+#define DEFAULT_CONTROL_SIGNALS_INVERT_MASK 8  // 8 = SIGNALS_SAFETYDOOR_BIT (bit 3)
 //#define LIMITS_OVERRIDE_ENABLE  1
 //#define ESTOP_ENABLE            0 // When enabled only real-time report requests will be executed when reset pin is asserted.
 
