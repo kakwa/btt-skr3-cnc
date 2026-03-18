@@ -90,6 +90,7 @@
         creates: /root/.platformio/platforms/ststm32
       become: yes
       become_user: root
+      ignore_errors: yes
       when: ansible_facts['architecture'] == "aarch64"
 
     - name: Patch ststm32 platform.json to remove toolchain version constraint
