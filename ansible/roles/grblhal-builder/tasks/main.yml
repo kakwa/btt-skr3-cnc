@@ -161,6 +161,14 @@
     backup: yes
   when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
 
+- name: Add BUILD_EPOCH to platformio.ini (set at each pio run via $UNIX_TIME)
+  lineinfile:
+    path: "{{ grblhal_source_dir }}/platformio.ini"
+    regexp: '^\s*-D BUILD_EPOCH='
+    line: '  -D BUILD_EPOCH=$UNIX_TIME'
+    insertafter: '  # -D OVERRIDE_MY_MACHINE removed to use custom my_machine.h'
+  when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
+
 - name: Display warning if local sources not found
   debug:
     msg: "WARNING: Local grblHAL sources not found at {{ grblhal_local_source }}. Skipping deployment."

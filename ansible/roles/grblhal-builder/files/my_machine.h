@@ -27,8 +27,14 @@
 // ============================================================================
 // CUSTOM BUILD INFO
 // ============================================================================
+// Builder number: set at build time for unique IDs, e.g. -DBUILD_EPOCH=$(date +%s)
+#ifndef BUILD_EPOCH
+#define BUILD_EPOCH 0
+#endif
+#define BUILD_STR_(x) #x
+#define BUILD_STR(x) BUILD_STR_(x)
 // Custom version string that appears in $I command
-#define GRBL_BUILD_INFO "BTT-SKR3-TMC5160-SPI-XY-GANGED"
+#define GRBL_BUILD_INFO "BTT-SKR3-TMC5160-SPI-XY-GANGED-YETITOOLCNC-" BUILD_STR(BUILD_EPOCH)
 
 // ============================================================================
 // MOTOR CONFIGURATION
@@ -55,7 +61,7 @@
 // OPTIMIZED FOR TORQUE: 2.5A current with SpreadCycle and lower microstepping
 #define DEFAULT_X_CURRENT     2500.0f // X axis motor current (mA RMS)
 #define DEFAULT_Y_CURRENT     2500.0f // Y axis motor current (mA RMS)
-#define DEFAULT_Z_CURRENT     2500.0f // Z axis motor current (mA RMS)
+#define DEFAULT_Z_CURRENT     2000.0f // Z axis motor current (mA RMS)
 #define DEFAULT_A_CURRENT     2500.0f // X2 ganged motor current (mA RMS)
 #define DEFAULT_B_CURRENT     2500.0f // Y2 ganged motor current (mA RMS)
 
@@ -114,6 +120,12 @@
 #define PROBE_ENABLE   1
 #define CONTROL_ENABLE 1
 #define CONTROL_HALT   1
+
+// Maximum axis travel (mm). Used for soft limits and homing.
+#define DEFAULT_X_MAX_TRAVEL 2500.0f
+#define DEFAULT_Y_MAX_TRAVEL 1250.0f
+#define DEFAULT_Z_MAX_TRAVEL 130.0f
+
 //#define FANS_ENABLE             1 // Enable fan control via M106/M107.
 //#define SAFETY_DOOR_ENABLE      1
 //#define LIMITS_OVERRIDE_ENABLE  1
