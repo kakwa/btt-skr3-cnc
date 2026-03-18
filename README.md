@@ -173,8 +173,32 @@ Waiting for board to restart...
 
 You can now connect to grblHAL via /dev/ttyACM0
 
+## Connect to gSender
 
+From there, if you are on the same network, you should be able to connect with the following URL: https://kwcnc.local (accept self-signed cert).
 
-# Wiring
+Once connected you should be able to control the CNC or run gcode.
+
+# Wiring Everything
+
+## TMC 5160 Stepper Controler
+
+TODO
+
+## Limit Switches
+
+Z Limit Switch: port TODO
+Z Probe: port TODO
+Y Limit Switch: port TODO
+Y Limit Max Switch: port TODO
+X Limit Switch: port TODO
+X Limit Max Switch: port TODO
+Collision Switch
+
+## Spindle PWM Controller
+
+TODO
+
+## Schematic
 
 TODO
