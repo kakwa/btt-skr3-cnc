@@ -15,3 +15,9 @@
     components: main
     architectures: arm64
     signed_by: https://kakwa.github.io/misc-pkg/GPG-KEY.pub
+  register: misc_pkg_repo
+
+- name: Update apt cache when repository changed
+  ansible.builtin.apt:
+    update_cache: yes
+  when: misc_pkg_repo is changed
