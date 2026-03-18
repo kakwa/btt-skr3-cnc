@@ -1,12 +1,12 @@
 # btt-skr3-cnc
 
-CNC configuration for BTT SKR3 + grblHAL + Pi + gSender
+Reviving a Yetitool CNC using a Bigtreetech SKR3 EZ + grblHAL + PI + gSender.
 
 ## Hardware Configuration
 
-- **Board**: BTT SKR 3 (STM32H7xx)
-- **Stepper Drivers**: TMC5160 (SPI mode)
-- **Control**: Pi running gSender
+- **Board**: [BTT SKR 3 EZ (STM32H7xx)](https://github.com/bigtreetech/SKR-3)
+- **Stepper Drivers**: TMC5160
+- **Control**: [BTT Pi](https://github.com/bigtreetech/BTT-Pi) running [gSender](https://sienci.com/gsender/)
 - **Motors**: X, Y, Z + ganged X2, Y2
 
 # Pi Configuring
@@ -183,17 +183,25 @@ Once connected you should be able to control the CNC or run gcode.
 
 ## TMC 5160 Stepper Controler
 
-TODO
+* XM -> X1
+* YM -> Y1
+* ZM -> Z
+* E0M -> X2 (ganged)
+* E1M -> Y2 (ganged)
 
 ## Limit Switches
 
-Z Limit Switch: port TODO
-Z Probe: port TODO
-Y Limit Switch: port TODO
-Y Limit Max Switch: port TODO
-X Limit Switch: port TODO
-X Limit Max Switch: port TODO
-Collision Switch
++--------------------+-----------+------+
+| Name               | GRBLHAL   | SCH  |
++--------------------+-----------+------+
+| Z Limit Switch     | GPIOC 0   | PC0  |
+| Z Probe            | GPIOC 15  | PC15 |
+| Y Limit Switch     | GPIOC 3   | PC3  |
+| Y Limit Max Switch | GPIOA 0   | PA0  |
+| X Limit Switch     | GPIOC 1   | PC1  |
+| X Limit Max Switch | GPIOC 2   | PC2  |
+| Collision Switch   | GPIOA 7   | PA7  |
++--------------------+-----------+------+
 
 ## Spindle PWM Controller
 
