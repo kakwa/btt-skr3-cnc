@@ -22,7 +22,10 @@
 // ============================================================================
 // BOARD SELECTION
 // ============================================================================
+
+#ifndef BOARD_BTT_SKR_30
 #define BOARD_BTT_SKR_30      // BTT SKR V3 board.
+#endif
 
 // ============================================================================
 // CUSTOM BUILD INFO
@@ -85,8 +88,6 @@
 // OPTIMIZED FOR TORQUE: Using SpreadCycle (0)
 #define TMC_STEALTHCHOP 0
 
-#define PROBE_ENABLE          1
-
 // ============================================================================
 // SPINDLE CONFIGURATION
 // ============================================================================
@@ -95,10 +96,6 @@
 // Up to four specific spindle drivers can be instantiated at a time.
 // If none are specified the default PWM spindle is instantiated.
 // More info: https://github.com/grblHAL/Plugins_spindle
-
-#define PROBE_ENABLE          1
-#define DRIVER_SPINDLE_ENABLE 1
-#define SPINDLE_PWM           1
 
 // VFD spindle via Modbus/RS-485:
 // To use Modbus, uncomment the lines below and rebuild
@@ -119,7 +116,6 @@
 // ============================================================================
 #define PROBE_ENABLE   1
 #define CONTROL_ENABLE 1
-#define CONTROL_HALT   1
 
 // Maximum axis travel (mm). Used for soft limits and homing.
 #define DEFAULT_X_MAX_TRAVEL 2500.0f
@@ -127,9 +123,9 @@
 #define DEFAULT_Z_MAX_TRAVEL 130.0f
 
 //#define FANS_ENABLE             1 // Enable fan control via M106/M107.
-#define SAFETY_DOOR_ENABLE      1  // Use the Safety Door Pin for the collision detection bar switch on PA7 (EXP2 pin 5)
+//#define SAFETY_DOOR_ENABLE      1  // Use the Safety Door Pin for the collision detection bar switch on PA7 (EXP2 pin 5)
 // Safety door/collision input: Normally Open (NO) — invert so closed = trigger
-#define DEFAULT_CONTROL_SIGNALS_INVERT_MASK 8  // 8 = SIGNALS_SAFETYDOOR_BIT (bit 3)
+// #define DEFAULT_CONTROL_SIGNALS_INVERT_MASK 8  // 8 = SIGNALS_SAFETYDOOR_BIT (bit 3)
 //#define LIMITS_OVERRIDE_ENABLE  1
 //#define ESTOP_ENABLE            0 // When enabled only real-time report requests will be executed when reset pin is asserted.
 
