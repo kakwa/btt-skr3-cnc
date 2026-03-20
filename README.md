@@ -191,21 +191,28 @@ Once connected you should be able to control the CNC or run gcode.
 
 ## Limit Switches
 
-+--------------------+-----------+------+
-| Name               | GRBLHAL   | SCH  |
-+--------------------+-----------+------+
-| Z Limit Switch     | GPIOC 0   | PC0  |
-| Z Probe            | GPIOC 15  | PC15 |
-| Y Limit Switch     | GPIOC 3   | PC3  |
-| Y Limit Max Switch | GPIOA 0   | PA0  |
-| X Limit Switch     | GPIOC 1   | PC1  |
-| X Limit Max Switch | GPIOC 2   | PC2  |
-| Collision Switch   | GPIOA 7   | PA7  |
-+--------------------+-----------+------+
++--------------------+-----------+------+------------------+
+| Name               | GRBLHAL   | Pin  | Board label      |
++--------------------+-----------+------+------------------+
+| Z Limit Switch     | GPIOC 0   | PC0  | Z- STOP          |
+| Z Probe            | GPIOC 13  | PC13 | Probe            |
+| Y Limit Switch     | GPIOC 3   | PC3  | Y- STOP          |
+| Y Limit Max Switch | GPIOX X   | PXX  | TODO             |
+| X Limit Switch     | GPIOC 1   | PC1  | X- STOP          |
+| X Limit Max Switch | GPIOX X   | PXX  | TODO             |
+| Collision Switch   | GPIOA 7   | PA7  | EXP2 pin 5       |
++--------------------+-----------+------+------------------+
 
 ## Spindle PWM Controller
 
-TODO
++--------------------+-----------+------+------------------+
+| Function           | GRBLHAL   | Pin  | Board label      |
++--------------------+-----------+------+------------------+
+| Spindle PWM        | GPIOB 0   | PB0  | EXP1 pin 9       |
+| Spindle enable     | GPIOB 6   | PB6  | FAN1             |
++--------------------+-----------+------+------------------+
+
+Also need a PWM to 1-10V converter + a relay board (Spindle enable)
 
 ## Schematic
 
