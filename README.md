@@ -191,17 +191,17 @@ Once connected you should be able to control the CNC or run gcode.
 
 ## Limit Switches
 
-+--------------------+-----------+------+------------------+
-| Name               | GRBLHAL   | Pin  | Board label      |
-+--------------------+-----------+------+------------------+
-| Z Limit Switch     | GPIOC 0   | PC0  | Z- STOP          |
-| Z Probe            | GPIOC 13  | PC13 | Probe            |
-| Y Limit Switch     | GPIOC 3   | PC3  | Y- STOP          |
-| Y Limit Max Switch | GPIOX X   | PXX  | TODO             |
-| X Limit Switch     | GPIOC 1   | PC1  | X- STOP          |
-| X Limit Max Switch | GPIOX X   | PXX  | TODO             |
-| Collision Switch   | GPIOA 7   | PA7  | EXP2 pin 5       |
-+--------------------+-----------+------+------------------+
++------------------------+-----------+------+--------------+
+| Name                   | GRBLHAL   | Pin  | Board label  |
++------------------------+-----------+------+--------------+
+| Z Limit Switch         | GPIOC 0   | PC0  | Z- STOP      |
+| Z Probe                | GPIOC 13  | PC13 | Probe        |
+| Y Limit Switch         | GPIOC 3   | PC3  | Y- STOP      |
+| Y Limit Max Switch     | GPIOX X   | PXX  | TODO         |
+| X Limit Switch         | GPIOC 1   | PC1  | X- STOP      |
+| X Limit Max Switch     | GPIOX X   | PXX  | TODO         |
+| Collision Switch/ESTOP | GPIOA 7   | PA7  | EXP2 pin 5   |
++------------------------+-----------+------+--------------+
 
 ## Spindle PWM Controller
 
