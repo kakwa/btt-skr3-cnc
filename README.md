@@ -2,6 +2,15 @@
 
 Reviving a Yetitool CNC using a Bigtreetech SKR3 EZ + grblHAL + PI + gSender.
 
+## Project Status
+
+* [x] Pi configuration
+* [x] Base GRBLHAL setup
+* [ ] End Stops and safety stop configuration
+* [ ] Spindle Control (optional)
+* [ ] Proper Case for elec
+* [ ] Wiring/adapter board 
+
 ## Hardware Configuration
 
 - **Board**: [BTT SKR 3 EZ (STM32H7xx)](https://github.com/bigtreetech/SKR-3)
