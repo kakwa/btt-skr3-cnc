@@ -20,7 +20,7 @@ Reviving a Yetitool CNC using a Bigtreetech SKR3 EZ + grblHAL + PI + gSender.
 
 # Pi Configuring
 
-## Repostory Checkout
+## Repository Checkout
 
 ```bash
 git clone https://github.com/kakwa/btt-skr3-cnc
@@ -154,7 +154,7 @@ Build Complete!
 ======================================
 ```
 
-Finally, locate teh boot and reset button on the SKR3/MCU board,
+Finally, locate the boot and reset button on the SKR3/MCU board,
 and then flash grblhal on the MCU using [flashing helper script](TODO) :
 
 ```bash
