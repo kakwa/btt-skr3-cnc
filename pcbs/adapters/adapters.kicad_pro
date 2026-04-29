@@ -645,7 +645,7 @@
         "uuid": "9730a2a5-da42-4c45-bf83-c2b3aca63b5c"
       }
     ],
-    "used_designators": "#PWR1-3,J1-14",
+    "used_designators": "J9_ES1,J2_Spindle1,J1_probe1,J8_Z1,J1-2,J4,J15",
     "variants": []
   },
   "sheets": [
