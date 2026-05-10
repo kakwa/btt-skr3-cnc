@@ -7937,6 +7937,16 @@
 			(justify bottom)
 		)
 	)
+	(gr_text "YetiCNC Revival - Bottom - v0.1\nKakwalab © - 2026"
+		(at 89 105.5 0)
+		(layer "F.SilkS")
+		(uuid "4dc05944-1990-4a3d-a4f5-d3129f044363")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
 	(segment
 		(start 165 93)
 		(end 161 93)
