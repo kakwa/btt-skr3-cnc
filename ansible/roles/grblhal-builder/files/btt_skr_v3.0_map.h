@@ -69,6 +69,10 @@
 // Trade-off: slightly less smooth motion, but significantly more power
 #define TRINAMIC_DEFAULT_MICROSTEPS 8
 
+// Ganged axis direction invert: bit 0 = X ganged (M3), bit 1 = Y ganged (M4)
+// 0x03 = X_AXIS_BIT | Y_AXIS_BIT (nuts_bolts.h not available in Phase 1)
+#define DEFAULT_GANGED_DIRECTION_INVERT_MASK 0x03
+
 // StealthChop mode (0 = SpreadCycle/CoolStep, 1 = StealthChop)
 // SpreadCycle: Maximum torque at all speeds (louder but stronger)
 // StealthChop: Silent but reduced torque
