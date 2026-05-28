@@ -39,7 +39,30 @@ Flash the OS to an SD card. Choose one of:
 
 ### Initial Setup
 
-**Find Pi IP Address:**
+**Find Pi IP Address via Ethernet (Quick DHCP Server Method):**
+
+If the Pi is not yet on your network, you can set up a quick DHCP server on your local machine to assign it an IP:
+
+```bash
+# On your local machine (Linux), install dnsmasq if not already installed
+sudo apt install dnsmasq
+
+# Configure a DHCP server on your ethernet interface
+# Edit /etc/dnsmasq.conf and add:
+# interface=eth0  (or your ethernet interface name)
+# dhcp-range=192.168.100.50,192.168.100.150,24h
+# dhcp-option=3   (no default gateway needed)
+
+# Run dnsmasq in foreground (for debugging):
+sudo dnsmasq -d -C /etc/dnsmasq.conf
+
+# In another terminal, connect your Pi via ethernet and find its IP:
+arp-scan -l | grep -i "bigtreetech\|raspberry"
+# Or check DHCP leases:
+cat /var/lib/dnsmasq/dnsmasq.leases
+```
+
+**Find Pi IP Address via Network Scan:**
 
 ```bash
 # Scan network for Pi by MAC address prefix
