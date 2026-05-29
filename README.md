@@ -47,19 +47,24 @@ If the Pi is not yet on your network, you can set up a quick DHCP server on your
 # On your local machine (Linux), install dnsmasq if not already installed
 sudo apt install dnsmasq
 
-# Configure a DHCP server on your ethernet interface
-# Edit /etc/dnsmasq.conf and add:
-# interface=eth0  (or your ethernet interface name)
-# dhcp-range=192.168.100.50,192.168.100.150,24h
-# dhcp-option=3   (no default gateway needed)
+# List network interfaces and pick your ethernet NIC (often eno1, eth0, enp*s0):
+ip addr
 
-# Run dnsmasq in foreground (for debugging):
+# Assign a static address on the link to the Pi (replace eno1 with your interface):
+sudo ip addr add 192.168.100.1/24 dev eno1
+
+# Write a minimal dnsmasq config (replace eno1 with your interface):
+sudo tee /etc/dnsmasq.conf > /dev/null <<'EOF'
+interface=eno1
+dhcp-range=192.168.100.50,192.168.100.150,24h
+dhcp-option=3
+EOF
+
+# Run dnsmasq in foreground
 sudo dnsmasq -d -C /etc/dnsmasq.conf
 
-# In another terminal, connect your Pi via ethernet and find its IP:
-arp-scan -l | grep -i "bigtreetech\|raspberry"
-# Or check DHCP leases:
-cat /var/lib/dnsmasq/dnsmasq.leases
+# ou should see the IP allocated to the Pi in the logs
+# if not, unplug and replug it
 ```
 
 **Find Pi IP Address via Network Scan:**
