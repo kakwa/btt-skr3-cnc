@@ -51,6 +51,25 @@
     mode: '0600'
   when: nginx_enabled and nginx_ssl_enabled
 
+- name: Create nginx error page directory
+  file:
+    path: "{{ nginx_error_page_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: nginx_enabled
+
+- name: Deploy nginx 502 error page
+  template:
+    src: 502.html.j2
+    dest: "{{ nginx_error_page_dir }}/502.html"
+    owner: root
+    group: www-data
+    mode: '0644'
+  notify: restart nginx
+  when: nginx_enabled
+
 - name: Create nginx site configuration
   template:
     src: reverse-proxy.conf.j2

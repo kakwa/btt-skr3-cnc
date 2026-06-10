@@ -48,6 +48,13 @@ server {
     # Client max body size (for file uploads)
     client_max_body_size {{ nginx_client_max_body_size }};
 
+    error_page 502 /502.html;
+
+    location = /502.html {
+        root {{ nginx_error_page_dir }};
+        internal;
+    }
+
     # Proxy settings
     location / {
         proxy_pass http://{{ nginx_upstream_host }}:{{ nginx_upstream_port }};

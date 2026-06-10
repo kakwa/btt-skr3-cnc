@@ -57,6 +57,10 @@ nginx_proxy_read_timeout: "300s"
 nginx_proxy_buffering: "off"
 nginx_proxy_request_buffering: "off"
 
+# Custom error pages
+nginx_error_page_dir: "/var/www/nginx-error"
+nginx_error_page_refresh_seconds: 5
+
 # Security headers
 nginx_security_headers:
   - "Strict-Transport-Security \"max-age=31536000; includeSubDomains\" always"

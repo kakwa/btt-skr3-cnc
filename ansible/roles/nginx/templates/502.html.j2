@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="{{ nginx_error_page_refresh_seconds }}">
+    <title>gSender not available</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --accent: #f97316;
+            --accent-soft: rgba(249, 115, 22, 0.15);
+            --ring: rgba(249, 115, 22, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 1.5rem;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top, rgba(249, 115, 22, 0.12), transparent 45%),
+                linear-gradient(160deg, #0b1220 0%, var(--bg) 55%, #111827 100%);
+        }
+
+        .card {
+            width: min(100%, 32rem);
+            padding: 2.5rem 2rem;
+            border-radius: 1.25rem;
+            background: color-mix(in srgb, var(--card) 92%, white 8%);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow:
+                0 24px 48px rgba(15, 23, 42, 0.45),
+                0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+            text-align: center;
+        }
+
+        .icon {
+            width: 4.5rem;
+            height: 4.5rem;
+            margin: 0 auto 1.25rem;
+            display: grid;
+            place-items: center;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            box-shadow: 0 0 0 8px rgba(249, 115, 22, 0.06);
+        }
+
+        .spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid rgba(249, 115, 22, 0.25);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        h1 {
+            margin: 0 0 0.75rem;
+            font-size: clamp(1.5rem, 4vw, 1.875rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            margin: 0;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .status {
+            margin-top: 1.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 0.875rem;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            font-size: 0.95rem;
+        }
+
+        .status strong {
+            color: var(--text);
+        }
+
+        .countdown {
+            display: inline-block;
+            min-width: 1.5ch;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+            font-weight: 700;
+        }
+
+        .hint {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .spinner {
+                animation: none;
+                border-top-color: rgba(249, 115, 22, 0.55);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="card" role="main" aria-live="polite">
+        <div class="icon" aria-hidden="true">
+            <div class="spinner"></div>
+        </div>
+        <h1>gSender not (yet) available</h1>
+        <p>The CNC control interface is still starting up or temporarily unreachable.</p>
+        <div class="status">
+            Checking again in <span class="countdown" id="countdown">{{ nginx_error_page_refresh_seconds }}</span> seconds&hellip;
+        </div>
+        <p class="hint">This page will refresh automatically.</p>
+    </main>
+    <script>
+        (function () {
+            var seconds = {{ nginx_error_page_refresh_seconds }};
+            var countdown = document.getElementById("countdown");
+            if (!countdown) {
+                return;
+            }
+            var remaining = seconds;
+            var timer = window.setInterval(function () {
+                remaining -= 1;
+                if (remaining <= 0) {
+                    window.clearInterval(timer);
+                    countdown.textContent = "0";
+                    return;
+                }
+                countdown.textContent = String(remaining);
+            }, 1000);
+        })();
+    </script>
+</body>
+</html>
