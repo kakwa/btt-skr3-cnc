@@ -142,42 +142,15 @@
       - "--exclude=*.bin"
       - "--exclude=*.hex"
       - "--exclude=my_machine.h"
-      - "--exclude=boards/btt_skr_v3.0_map.h"
   when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
 
 - name: Ensure Inc/my_machine.h is empty (options live in boards/btt_skr_v3.0_map.h)
   copy:
-    content: ""
+    src: btt_skr_v3.0_map.h
     dest: "{{ grblhal_source_dir }}/Inc/my_machine.h"
     owner: "{{ grblhal_build_user }}"
     group: "{{ grblhal_build_group }}"
     mode: '0644'
-    force: true
-  when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
-
-- name: Deploy customized boards/btt_skr_v3.0_map.h
-  copy:
-    src: btt_skr_v3.0_map.h
-    dest: "{{ grblhal_source_dir }}/boards/btt_skr_v3.0_map.h"
-    owner: "{{ grblhal_build_user }}"
-    group: "{{ grblhal_build_group }}"
-    mode: '0644'
-  when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
-
-- name: Ensure platformio.ini keeps OVERRIDE_MY_MACHINE (empty my_machine.h; options in board map)
-  replace:
-    path: "{{ grblhal_source_dir }}/platformio.ini"
-    regexp: '^\s*#\s*-D OVERRIDE_MY_MACHINE.*$'
-    replace: '  -D OVERRIDE_MY_MACHINE'
-    backup: yes
-  when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
-
-- name: Add BUILD_EPOCH to platformio.ini (set at each pio run via $UNIX_TIME)
-  lineinfile:
-    path: "{{ grblhal_source_dir }}/platformio.ini"
-    regexp: '^\s*-D BUILD_EPOCH='
-    line: '  -D BUILD_EPOCH=$UNIX_TIME'
-    insertafter: '^\s*-D OVERRIDE_MY_MACHINE\s*$'
   when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
 
 - name: Display warning if local sources not found
