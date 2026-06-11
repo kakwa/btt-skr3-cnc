@@ -27,6 +27,7 @@
 #define GRBL_BUILD_INFO "BTT-SKR3-TMC5160-SPI-XY-GANGED"
 #define N_ABC_MOTORS 2
 
+#define TRINAMIC_ENABLE     5160
 #define TRINAMIC_SPI_ENABLE 1
 #define X_GANGED            1
 #define X_AUTO_SQUARE       1
@@ -43,8 +44,13 @@
 
 // Ganged axis direction invert: bit 0 = X ganged (M3), bit 1 = Y ganged (M4)
 // 0x03 = X_AXIS_BIT | Y_AXIS_BIT (nuts_bolts.h not available in Phase 1)
-#define DEFAULT_GANGED_DIRECTION_INVERT_MASK 0x03
+//#define DEFAULT_GANGED_DIRECTION_INVERT_MASK 0x03
 
-#define PROBE_ENABLE   1
-#define CONTROL_ENABLE 1
+//#define PROBE_ENABLE   1
+
+// EXP2 pin 7 (PA4) uses an internal pull-up; NC E-stop must tie it to GND when wired.
+// Until then, disable all control inputs or the floating pin triggers halt/estop at boot.
+#define ESTOP_ENABLE   0
+#define CONTROL_ENABLE 0
+
 //#define SAFETY_DOOR_ENABLE      1  // Use the Safety Door Pin for the collision detection bar switch on PA7 (EXP2 pin 5)
