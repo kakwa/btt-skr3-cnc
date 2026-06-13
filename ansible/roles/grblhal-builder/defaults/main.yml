@@ -17,6 +17,24 @@ grblhal_board: "BTT_SKR_3_EZ"
 grblhal_mcu: "STM32H7xx"
 grblhal_platformio_env: "btt_skr_30_h723_tmc5160_bl128"
 
+# Machine options passed via PLATFORMIO_BUILD_FLAGS (no my_machine.h).
+# Keep in sync with grblhal_config.h at the repo root.
+grblhal_machine_build_flags: >-
+  -D GRBL_BUILD_INFO=\"BTT-SKR3-TMC5160-SPI-XY-GANGED\"
+  -D TRINAMIC_SPI_ENABLE=1
+  -D X_GANGED=1
+  -D X_AUTO_SQUARE=1
+  -D Y_GANGED=1
+  -D Y_AUTO_SQUARE=1
+  -D DEFAULT_X_CURRENT=2500.0f
+  -D DEFAULT_Y_CURRENT=2500.0f
+  -D DEFAULT_Z_CURRENT=2000.0f
+  -D DEFAULT_A_CURRENT=2500.0f
+  -D DEFAULT_B_CURRENT=2500.0f
+  -D TRINAMIC_DEFAULT_MICROSTEPS=16
+  -D ESTOP_ENABLE=0
+  -D CONTROL_ENABLE=0
+
 # ARM toolchain version (use 'present' for distro version)
 grblhal_arm_toolchain_state: present
 

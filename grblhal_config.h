@@ -1,1 +1,0 @@
-ansible/roles/grblhal-builder/files/btt_skr_v3.0_map.h
