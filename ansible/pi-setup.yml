@@ -19,3 +19,4 @@
     - { role: nginx, tags: ["system", "network", "nginx"] }
     - { role: gsender, tags: ["apps", "gsender"] }
     - { role: grblhal-builder, tags: ["development", "grblhal"] }
+    - { role: cnc-console, tags: ["apps", "cnc-console"] }

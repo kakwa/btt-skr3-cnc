@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""Tiny line-buffered serial console with local echo.
+
+Default target: /dev/ttyACM0 @ 115200 (grblHAL on the BTT SKR3).
+Lines typed by the user are visible while editing (unlike screen/picocom
+in char mode), then sent on Enter. Async output from the controller is
+printed without clobbering the line currently being edited.
+"""
+
+import argparse
+import readline  # noqa: F401  -- enables line editing/history for input()
+import sys
+import threading
+
+import serial
+
+
+def reader_loop(ser, prompt):
+    while True:
+        try:
+            data = ser.readline()
+        except serial.SerialException as exc:
+            sys.stdout.write(f"\r\x1b[K[serial error: {exc}]\n")
+            sys.stdout.flush()
+            return
+        if not data:
+            continue
+        text = data.decode(errors="replace").rstrip("\r\n")
+        # Erase current input line, print response, redraw prompt + buffer.
+        sys.stdout.write("\r\x1b[K" + text + "\n")
+        try:
+            buf = readline.get_line_buffer()
+        except Exception:
+            buf = ""
+        sys.stdout.write(prompt + buf)
+        sys.stdout.flush()
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Tiny serial prompt for grblHAL.")
+    parser.add_argument("-p", "--port", default="/dev/ttyACM0")
+    parser.add_argument("-b", "--baud", type=int, default=115200)
+    parser.add_argument("--prompt", default="> ")
+    parser.add_argument(
+        "--eol",
+        default="\n",
+        choices=["\n", "\r", "\r\n"],
+        help="Line ending sent after each command (default: LF).",
+    )
+    args = parser.parse_args()
+
+    try:
+        ser = serial.Serial(args.port, args.baud, timeout=0.2)
+    except serial.SerialException as exc:
+        print(f"Cannot open {args.port}: {exc}", file=sys.stderr)
+        return 1
+
+    print(f"Connected to {args.port} @ {args.baud}. Ctrl-D / Ctrl-C to quit.")
+    t = threading.Thread(target=reader_loop, args=(ser, args.prompt), daemon=True)
+    t.start()
+
+    try:
+        while True:
+            try:
+                line = input(args.prompt)
+            except EOFError:
+                print()
+                break
+            except KeyboardInterrupt:
+                print()
+                break
+            ser.write((line + args.eol).encode())
+    finally:
+        ser.close()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
