@@ -148,6 +148,14 @@
     msg: "WARNING: Local grblHAL sources not found at {{ grblhal_local_source }}. Skipping deployment."
   when: grblhal_deploy_sources and not grblhal_local_stat.stat.exists
 
+- name: Inject kwcnc_yeti env into platformio.ini
+  blockinfile:
+    path: "{{ grblhal_source_dir }}/platformio.ini"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: kwcnc_yeti"
+    insertafter: EOF
+    block: "{{ lookup('template', 'platformio_kwcnc_yeti.ini.j2') }}"
+  when: grblhal_deploy_sources and grblhal_local_stat.stat.exists
+
 - name: Set ownership of grblHAL sources
   file:
     path: "{{ grblhal_source_dir }}"

@@ -4,6 +4,27 @@
   #become: true
 
   vars:
+    # grblHAL machine-specific build flags injected into [env:kwcnc_yeti] in platformio.ini
+    grblhal_machine_build_flags:
+      - '-D GRBL_BUILD_INFO=\"BTT-SKR3-TMC5160-SPI-XY-GANGED\"'
+      - "-D TRINAMIC_SPI_ENABLE=1"
+      - "-D X_GANGED=1"
+      - "-D X_AUTO_SQUARE=1"
+      - "-D Y_GANGED=1"
+      - "-D Y_AUTO_SQUARE=1"
+      - "-D DEFAULT_X_CURRENT=1000.0f"
+      - "-D DEFAULT_Y_CURRENT=1000.0f"
+      - "-D DEFAULT_Z_CURRENT=1000.0f"
+      - "-D DEFAULT_A_CURRENT=1000.0f"
+      - "-D DEFAULT_B_CURRENT=1000.0f"
+      - "-D DEFAULT_X_STEPS_PER_MM=80.0f"
+      - "-D DEFAULT_Y_STEPS_PER_MM=80.0f"
+      - "-D DEFAULT_Z_STEPS_PER_MM=400.0f"
+      - "-D DEFAULT_A_STEPS_PER_MM=80.0f"
+      - "-D DEFAULT_B_STEPS_PER_MM=80.0f"
+      - "-D ESTOP_ENABLE=0"
+      - "-D CONTROL_ENABLE=0"
+
     # Avahi configuration (for mDNS/SSH announcement)
     avahi_hostname: "kwcnc"
     avahi_domain_name: "local"
