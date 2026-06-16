@@ -75,7 +75,7 @@ fi
 echo -e "${GREEN}Building with PlatformIO...${NC}"
 echo -e "${YELLOW}Target environment: {{ grblhal_platformio_env }}${NC}"
 
-platformio run -e {{ grblhal_platformio_env }} "$@"
+platformio run -v -e {{ grblhal_platformio_env }} "$@"
 
 # Find the firmware binary in the specific environment build directory
 FIRMWARE=$(find .pio/build/{{ grblhal_platformio_env }} -name "*.bin" | head -n 1)
