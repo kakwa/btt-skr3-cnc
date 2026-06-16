@@ -209,6 +209,7 @@ Waiting for board to restart...
 ✓ Serial device: /dev/ttyACM0
 
 You can now connect to grblHAL via /dev/ttyACM0
+```
 
 ## Connect to gSender
 
