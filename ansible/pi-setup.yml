@@ -6,7 +6,7 @@
   vars:
     # grblHAL machine-specific build flags injected into [env:kwcnc_yeti] in platformio.ini
     grblhal_machine_build_flags:
-      - '-D GRBL_BUILD_INFO=\"BTT-SKR3-TMC5160-SPI-XY-GANGED\"'
+      - "!echo \"-D BUILD_INFO='\\\"KWCNC_$(date +%%Y%%m%%d_%%H%%M)\\\"'\""
       - "-D X_GANGED=1"
       - "-D X_AUTO_SQUARE=1"
       - "-D Y_GANGED=1"
