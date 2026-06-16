@@ -140,3 +140,4 @@ $102=400     # Z steps/mm (example for lead screw)
 * Settings are kind of stored on flash, including stuff like `BUILD_INFO`. A reset from time to time might be a good idea.
 * For this setup, don't use `my_machine.h`. Only leverage `-D PARAM=VALUE` in platform.io
 * grblhal documentation is a bit lacking.
+* bodge wires are the devil (I might have or have not burnt a board).
