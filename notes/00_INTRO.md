@@ -43,8 +43,21 @@ Let's limit ourselves to Open Source options, so no [Mach 4](https://www.mach-la
 
 For the UI, I picked [gSender](https://sienci.com/gsender/), which is quite nice and has frequent updates.
 
+## Table of Contents
+
+- [Introduction](#introduction)
+- [What Are The Options?](#what-are-the-options)
+  - [LinuxCNC + Mesa Hardware](#linuxcnc--mesa-hardware)
+  - [FluidNC + ESP32](#fluidnc--esp32)
+  - [grblHAL + STM32](#grblhal--stm32)
+  - [Final Choice: grblHAL + BTT SKR 3 + TMC5160 + Pi + gSender](#final-choice-grblhal--btt-skr-3--tmc5160--pi--gsender)
+- [Documentation](#documentation)
+
 ## Documentation
 
-- **[WIRING.md](WIRING.md)** - Complete wiring guide for BTT SKR 3 with grblHAL
-- **[BUILD_FLASH.md](BUILD_FLASH.md)** - Build and flash instructions
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Testing procedures, troubleshooting, and safety
+- **[01_HARDWARE.md](01_HARDWARE.md)** - BTT SKR 3 wiring guide for grblHAL
+- **[02_INSTALL.md](02_INSTALL.md)** - Base software setup (Pi, grblHAL build & flash)
+- **[03_CONFIGURATION.md](03_CONFIGURATION.md)** - grblHAL configuration
+- **[04_TROUBLESHOOTING.md](04_TROUBLESHOOTING.md)** - Troubleshooting and gotchas
+- **[90_MISC.md](90_MISC.md)** - Miscellaneous notes
+- **[99_SETTINGS.md](99_SETTINGS.md)** - grblHAL settings reference
