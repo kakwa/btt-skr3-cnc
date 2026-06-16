@@ -1,49 +1,51 @@
 # Troubleshooting & Gotchas
 
-## Access
+## Connecting to the Pi
 
-This setup is network accessible. Ideally, you should join the Pi to a wifi network.
-If not, plug it to an RJ45/Ethernet network with DHCP (look at `misc/pi-dhcp-nat.sh` script to temporary transform your laptop into a router if necessary).
+The setup is network accessible. Join the Pi to a WiFi network, or plug it into an Ethernet network with DHCP
+(see `misc/pi-dhcp-nat.sh` to temporarily turn your laptop into a router if needed).
 
-Assuming your computer is on the same LAN segment, you should be able to connect to the Pi through kwcnc.local mDNS/Bonjour/Avahi.
+Once on the same LAN, the Pi is reachable via mDNS at `kwcnc.local`:
 
-You can ssh onto it:
+| Service    | Address                    |
+|------------|----------------------------|
+| SSH        | `ssh root@kwcnc.local`     |
+| gSender UI | http://kwcnc.local         |
 
-```shell
-ssh root@kwcnc.local
-```
-
-And open the [gSender WebUI](https://kwcnc.local)
-
-## Joining a Wifi
-
-Become root, and run:
+### Joining a WiFi Network
 
 ```shell
 nmtui
 ```
 
-## gCode
+---
 
-### CLI cnc-console
+## Interacting with the CNC (gCode)
 
-For convinience, this setup comes with a basic console to send gcode:
+### Serial Console
 
-```shell
-cnc-console
-```
-
-It's equivalent to:
+Two equivalent ways to open an interactive gCode console:
 
 ```shell
-screen /dev/ttyACM0 115200
+cnc-console                  # convenience wrapper
+screen /dev/ttyACM0 115200   # equivalent manual command
 ```
 
-The board is exposed on `/dev/ttyACM0` at baud rate/speed of 115200 baud.
+The board is on `/dev/ttyACM0` at 115200 baud. There is also a built-in (tiny) console in the bottom-right of gSender.
 
-Alternatively, you can use the way too tiny console at the bottom right of gSender.
+### Useful Diagnostic Commands
 
-### Useful Troubleshooting GCode Commands
+| Command   | Purpose                              |
+|-----------|--------------------------------------|
+| `$$`      | List all settings                    |
+| `$I`      | Show firmware/system info            |
+| `?`       | Show current status                  |
+| `$RST=*`  | Reset all settings to factory        |
+| `$HELP`   | List help topics                     |
+| `M122`    | Trinamic driver status               |
+| `$338`    | Driver settings bitmask              |
+
+### Command Examples
 
 ```bash
 > $$      # List all settings
@@ -109,6 +111,7 @@ Peak current       1400    1400    1400    1400    1400
 Run current       19/31   19/31   19/31   19/31   19/31
 [...]
 ok
+```
 
 ```bash
 > $338    # driver settings bitmask
@@ -116,9 +119,12 @@ $338=7
 ok
 ```
 
-### GCode Settings
+---
 
-**Current**:
+## Current Settings
+
+### Motor Current (mA)
+
 ```bash
 $140=1200    # X axis current (mA)
 $141=1200    # Y axis current
@@ -127,17 +133,20 @@ $143=1200    # M3 axis current
 $144=1200    # M4 axis current
 ```
 
-**Steps per mm configured**:
+### Steps per mm
+
 ```bash
 $100=80      # X steps/mm
 $101=80      # Y steps/mm
 $102=400     # Z steps/mm (example for lead screw)
 ```
 
+---
+
 ## Gotchas
 
-* If you have even just one missing driver, SPI control stop working (M122 in `[MSG:Warning: Could not communicate with stepper driver!]` error). The drivers could actually be run without SPI... and some random current settings (smoky-smocky!).
+* If you have even just one missing driver, SPI control stops working (M122 returns `[MSG:Warning: Could not communicate with stepper driver!]` error). The drivers could actually be run without SPI... and some random current settings (smoky-smocky!).
 * Settings are kind of stored on flash, including stuff like `BUILD_INFO`. A reset from time to time might be a good idea.
-* For this setup, don't use `my_machine.h`. Only leverage `-D PARAM=VALUE` in platform.io
-* grblhal documentation is a bit lacking.
-* bodge wires are the devil (I might have or have not burnt a board).
+* For this setup, don't use `my_machine.h`. Only leverage `-D PARAM=VALUE` in platformio.
+* grblHAL documentation is a bit lacking.
+* Bodge wires are the devil (I might have or have not burnt a board).

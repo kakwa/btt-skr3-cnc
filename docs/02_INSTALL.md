@@ -4,7 +4,12 @@
 
 ### Pi Base OS
 
-TODO
+Flash the BTT Pi with its official Debian-based 64-bit OS image from the
+[BTT-Pi releases page](https://github.com/bigtreetech/BTT-Pi/releases).
+Enable SSH during imaging (or via `raspi-config` on first boot) and note the
+board's IP address — you'll need it for the Ansible step.
+
+The playbook targets **Debian arm64** and expects to run as `root` over SSH.
 
 ### Setup the Pi
 
@@ -53,11 +58,34 @@ ok: [192.168.1.46] => {
 }
 ```
 
-TODO partial apply (--tags)
+To run only a subset of roles, use `--tags`. Available tags:
+
+| Tag | Roles covered |
+|-----|---------------|
+| `system` | hostname, rsyslog, repos, avahi, nginx |
+| `network` | avahi, nginx |
+| `apps` | gsender, cnc-console |
+| `development` | grblhal-builder |
+| `hostname` | hostname |
+| `rsyslog` | rsyslog |
+| `repos` | repos (custom apt repository) |
+| `avahi` | avahi (mDNS) |
+| `nginx` | nginx (reverse proxy for gSender) |
+| `gsender` | gsender |
+| `grblhal` | grblhal-builder |
+| `cnc-console` | cnc-console |
+
+Example — re-deploy only the firmware build tools:
+
+```bash
+ansible-playbook -i "${PI_IP}," -u root pi-setup.yml --tags grblhal
+```
 
 ## Building Firmware
 
-Once 
+Once the Pi is provisioned, SSH into it and run the build script. The grblHAL
+sources are deployed to `/opt/grblhal` by Ansible; the compiled binary lands in
+`/opt/grblhal/build/`.
 
 ### Using the Helper Script
 
@@ -82,11 +110,9 @@ Build Complete!
 ======================================
 ```
 
-Under the hood, it's using plateform.io/pio.
-It uses a custom environment (deployed at the Ansible step)
-TODO run with bash -x to get the details.
-
-TODO location `/opt/grblhal`
+Under the hood it uses [PlatformIO](https://platformio.org/) with the custom
+`kwcnc_yeti` environment injected into `/opt/grblhal/platformio.ini` by Ansible.
+To see every command executed, run `bash -x skr3-build`.
 
 ## Flashing Firmware
 
@@ -171,7 +197,9 @@ upload_protocol = dfu
 # END ANSIBLE MANAGED BLOCK: kwcnc_yeti
 ```
 
-If possible do the same changes in [TODO ANSIBLE PLAYBOOK REF]
+To make these changes permanent, update the `grblhal_machine_build_flags` list
+in the `vars:` section of `ansible/pi-setup.yml` and re-run the playbook with
+`--tags grblhal` to redeploy the `platformio.ini` block.
 
 ## Connect to gSender
 
