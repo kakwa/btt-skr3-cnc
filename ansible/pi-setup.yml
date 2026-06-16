@@ -23,6 +23,10 @@
       - "-D DEFAULT_B_STEPS_PER_MM=80.0f"
       - "-D ESTOP_ENABLE=0"
       - "-D CONTROL_ENABLE=0"
+      - "-D TRINAMIC_UART_ENABLE=0"
+      - "-D TRINAMIC_SPI_ENABLE=1"
+      - "-D TRINAMIC_ENABLE=5160"
+      - "-D TRINAMIC_R_SENSE=75"
 
     # Avahi configuration (for mDNS/SSH announcement)
     avahi_hostname: "kwcnc"
