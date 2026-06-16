@@ -1,38 +1,34 @@
-# grblHAL Build and Flash Guide
+# Base Software Setup
 
-## Quick Start
+## Pi Installation
 
-After deploying the Ansible role, you'll have two helper scripts:
+### Pi Base OS
 
-```bash
-skr3-build    # Build firmware
-skr3-flash    # Flash firmware via USB (DFU)
-```
+TODO
+
+### Setup the Pi
+
+TODO ansible
+
+TODO partial apply (--tags)
 
 ## Building Firmware
 
+Once 
+
 ### Using the Helper Script
+
+Build can be done with the following script:
 
 ```bash
 skr3-build
 ```
 
-This will:
-- Build grblHAL for BTT SKR 3 (H723) with TMC5160 drivers
-- Use your custom `my_machine.h` configuration
-- Output firmware to `/opt/grblhal/build/firmware_latest.bin`
+Under the hood, it's using plateform.io/pio.
+It uses a custom environment (deployed at the Ansible step)
+TODO run with bash -x to get the details.
 
-### Manual Build with PlatformIO
-
-```bash
-cd /opt/grblhal
-platformio run -e btt_skr_30_h723_tmc5160_bl128
-```
-
-**Build Output:**
-```
-Firmware location: .pio/build/btt_skr_30_h723_tmc5160_bl128/firmware.bin
-```
+TODO location `/opt/grblhal`
 
 ## Flashing Firmware
 
@@ -43,201 +39,58 @@ skr3-flash
 ```
 
 The script will guide you through:
-1. Entering DFU bootloader mode (interactive prompts)
+1. Entering DFU bootloader mode (interactive, requires you to reset the board in DFU by pushing RESET and BOOT at the same time)
 2. Flashing the firmware
 3. Resetting the board to run the new firmware
 
-### Manual Flash
+Once again, run the script with bash -x to get the details.
 
-#### Step 1: Enter DFU Bootloader Mode
-
-1. **Hold** the BOOT0 button on the SKR3 board
-2. **Press and release** the RESET button (while holding BOOT0)
-3. **Release** the BOOT0 button
-
-**Verify DFU mode:**
-```bash
-dfu-util -l
-```
-
-You should see:
-```
-Found DFU: [0483:df11] ver=0200, devnum=X, cfg=1, intf=0, ...
-```
-
-#### Step 2: Flash Firmware
+Once flash available on port `/dev/ttyACM0` *@115200**.
 
 ```bash
-cd /opt/grblhal
-dfu-util -a 0 -s 0x08020000 -D .pio/build/btt_skr_30_h723_tmc5160_bl128/firmware.bin
+cnc-console
 ```
 
-**Important:** Use address `0x08020000` (not `0x08000000`) because the SKR3 has a 128KB bootloader.
+## Configuration tweaks:
 
-#### Step 3: Reset Board
-
-Press the **RESET** button on the board to start the firmware.
-
-**Verify it's running:**
 ```bash
-lsusb | grep 0483:5740    # Should show "Virtual COM Port"
-ls /dev/ttyACM*           # Serial device (usually /dev/ttyACM0)
+vim /opt/grblhal/platformio.ini
 ```
 
-## Board Configuration
-
-| Setting | Value |
-|---------|-------|
-| Board | BTT SKR 3 |
-| MCU | STM32H723VG |
-| Bootloader | 128KB (factory) |
-| Drivers | TMC5160 (UART mode) |
-| Flash Address | 0x08020000 |
-| PlatformIO Env | `btt_skr_30_h723_tmc5160_bl128` |
-
-## Configuration Files
-
-### Custom Configuration: `my_machine.h`
-
-Located at: `ansible/roles/grblhal-builder/files/my_machine.h`
-
-Key settings:
-- **Board:** `BOARD_BTT_SKR_30`
-- **Drivers:** TMC5160 with UART mode enabled (`TRINAMIC_UART_ENABLE 1`)
-- **Motors:** X and Y ganged with auto-squaring (5 motors total)
-- **Spindle:** PWM spindle enabled
-- **Probe:** Enabled
-- **Control:** E-STOP enabled (requires NC button on EXP2 pin 7)
-
-**Important:** UART mode requires PDN_UART jumpers installed on all driver sockets. See [WIRING.md](WIRING.md) for jumper configuration.
-
-This file is deployed separately and **not synced from upstream** to preserve your custom settings.
-
-### PlatformIO Environment
-
-The build uses the `btt_skr_30_h723_tmc5160_bl128` environment from `platformio.ini`:
+And edit the end:
 
 ```ini
-[env:btt_skr_30_h723_tmc5160_bl128]
+# BEGIN ANSIBLE MANAGED BLOCK: kwcnc_yeti
+# KW CNC Yeti - BTT SKR 3 H743 with TMC5160, ganged XY axes, SPI drivers
+[env:kwcnc_yeti]
 board = generic_stm32h723vg
-board_build.ldscript = STM32H723VGTX_FLASH_BL.ld  # 128KB bootloader
-build_flags = 
-  -D BOARD_BTT_SKR_30
-  -D HSE_VALUE=25000000
+board_build.ldscript = STM32H723VGTX_FLASH_BL.ld
+build_flags = ${env:btt_skr_30_h723_tmc5160_bl128.build_flags}
+  !echo "-D BUILD_INFO='\"KWCNC_$(date +%%Y%%m%%d_%%H%%M)\"'"
+  -D X_GANGED=1
+  -D X_AUTO_SQUARE=1
+  -D Y_GANGED=1
+  -D Y_AUTO_SQUARE=1
+  -D DEFAULT_X_CURRENT=1000.0f
+  -D DEFAULT_Y_CURRENT=1000.0f
+  -D DEFAULT_Z_CURRENT=1000.0f
+  -D DEFAULT_A_CURRENT=1000.0f
+  -D DEFAULT_B_CURRENT=1000.0f
+  -D DEFAULT_X_STEPS_PER_MM=80.0f
+  -D DEFAULT_Y_STEPS_PER_MM=80.0f
+  -D DEFAULT_Z_STEPS_PER_MM=400.0f
+  -D DEFAULT_A_STEPS_PER_MM=80.0f
+  -D DEFAULT_B_STEPS_PER_MM=80.0f
+  -D ESTOP_ENABLE=0
+  -D CONTROL_ENABLE=0
+  -D TRINAMIC_UART_ENABLE=0
+  -D TRINAMIC_SPI_ENABLE=1
   -D TRINAMIC_ENABLE=5160
-lib_deps = motors, trinamic, usb_h723, sdcard
+  -D TRINAMIC_R_SENSE=75
+lib_deps = ${env:btt_skr_30_h723_tmc5160_bl128.lib_deps}
+lib_extra_dirs = ${env:btt_skr_30_h723_tmc5160_bl128.lib_extra_dirs}
 upload_protocol = dfu
+# END ANSIBLE MANAGED BLOCK: kwcnc_yeti
 ```
 
-## Troubleshooting
-
-### Board Not Entering DFU Mode
-
-**Symptoms:**
-```bash
-dfu-util -l
-# No devices found
-```
-
-**Solution:**
-1. Unplug and replug USB cable
-2. Carefully repeat the BOOT0/RESET sequence
-3. Check with `lsusb` - should show `0483:df11`
-
-### Flash Error: "Error during download get_status"
-
-This error often occurs with the `:leave` flag but **the flash usually succeeded**. 
-
-**Solution:**
-- Don't use `:leave` in the dfu-util command
-- Flash without it: `dfu-util -a 0 -s 0x08020000 -D firmware.bin`
-- Manually press RESET after flashing
-
-### Board Stuck in DFU Mode After Flash
-
-**Symptoms:**
-```bash
-lsusb | grep 0483:df11  # Still shows DFU device
-```
-
-**Solution:**
-Press the **RESET** button on the board.
-
-### Wrong Flash Address
-
-**Symptoms:**
-- Board doesn't boot after flashing
-- Stuck in DFU mode
-
-**Common Mistake:**
-Using `0x08000000` instead of `0x08020000`
-
-**Solution:**
-The BTT SKR 3 has a **128KB bootloader** at `0x08000000-0x0801FFFF`.  
-The application **must** start at `0x08020000`.
-
-### Serial Device Not Appearing
-
-**Expected after successful flash:**
-```bash
-lsusb | grep 0483:5740
-# Bus 001 Device XXX: ID 0483:5740 STMicroelectronics Virtual COM Port
-
-ls /dev/ttyACM*
-# /dev/ttyACM0
-```
-
-**If not appearing:**
-1. Press RESET button
-2. Check `dmesg | tail -20` for USB errors
-3. Re-flash firmware
-
-## Connecting to grblHAL
-
-After successful flash:
-
-```bash
-# Check serial device
-ls -l /dev/ttyACM0
-
-# Connect with screen
-screen /dev/ttyACM0 115200
-
-# Or use gSender (web interface)
-# Navigate to: http://kwcnc.local:4000
-```
-
-## Build Customization
-
-To change the PlatformIO environment (e.g., different MCU or no bootloader):
-
-Edit `ansible/roles/grblhal-builder/defaults/main.yml`:
-
-```yaml
-# For H743 MCU without bootloader:
-grblhal_platformio_env: "btt_skr_30_h743_tmc5160"
-
-# For H743 with 128KB bootloader:
-grblhal_platformio_env: "btt_skr_30_h743_tmc5160_bl128"
-
-# For H723 without bootloader:
-grblhal_platformio_env: "btt_skr_30_h723_tmc5160"
-```
-
-Then re-run the Ansible playbook to update the build script.
-
-## Next Steps
-
-After successfully flashing firmware:
-1. Wire your hardware - see [WIRING.md](WIRING.md)
-2. Test and troubleshoot - see [TESTING_TROUBLESHOOTING.md](TESTING_TROUBLESHOOTING.md)
-3. Configure grblHAL settings for your machine
-
-## References
-
-- [WIRING.md](WIRING.md) - Hardware wiring guide
-- [TESTING_TROUBLESHOOTING.md](TESTING_TROUBLESHOOTING.md) - Testing and troubleshooting
-- [grblHAL GitHub](https://github.com/grblHAL)
-- [BTT SKR 3 Documentation](https://github.com/bigtreetech/SKR-3)
-- [dfu-util Documentation](http://dfu-util.sourceforge.net/)
-- [PlatformIO STM32 Platform](https://docs.platformio.org/en/latest/platforms/ststm32.html)
+If possible do the same changes in [TODO ANSIBLE PLAYBOOK REF]

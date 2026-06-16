@@ -33,7 +33,7 @@ Let's limit ourselves to Open Source options, so no [Mach 4](https://www.mach-la
 
 ### grblHAL + STM32
 
-[grblHAL](https://github.com/grblHAL) is GRBL ported to ARM microcontrollers. It keeps GRBL's familiar G-code dialect and adds proper TMC driver support, ganged-axis auto-squaring, and Modbus VFD control. It supports common boards like BTT SKR 3 (STM32H723) I ended-up chosing: 5 driver slots, enough GPIO, support of TMC5160.
+[grblHAL](https://github.com/grblHAL) is GRBL ported to ARM microcontrollers. It keeps GRBL's familiar G-code dialect and adds proper TMC driver support, ganged-axis auto-squaring, and Modbus VFD control. It supports common boards like BTT SKR 3 (STM32H723) I ended up choosing: 5 driver slots, enough GPIO, support of TMC5160.
 
 ### Final Choice: grblHAL + BTT SKR 3 + TMC5160 + Pi + gSender
 
