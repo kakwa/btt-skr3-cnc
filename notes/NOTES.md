@@ -46,7 +46,7 @@ Screenshots
 
 - **[WIRING.md](WIRING.md)** - Complete wiring guide for BTT SKR 3 with grblHAL
 - **[BUILD_FLASH.md](BUILD_FLASH.md)** - Build and flash instructions
-- **[TESTING_TROUBLESHOOTING.md](TESTING_TROUBLESHOOTING.md)** - Testing procedures, troubleshooting, and safety
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Testing procedures, troubleshooting, and safety
 
 ## grblHAL Build and Flash
 
@@ -101,5 +101,3 @@ EOF
 sudo sed -i 's/"version": ">=1.60301.0,<1.80000.0"/"version": "*"/' \
   /root/.platformio/platforms/ststm32/platform.json
 ```
-
-TODO: notes about ganged + plateformio disabling the `my_machine.h`
