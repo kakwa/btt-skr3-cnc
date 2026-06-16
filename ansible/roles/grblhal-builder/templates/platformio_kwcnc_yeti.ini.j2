@@ -1,7 +1,7 @@
 # KW CNC Yeti - BTT SKR 3 H743 with TMC5160, ganged XY axes, SPI drivers
 [env:kwcnc_yeti]
-board = generic_stm32h743vi
-board_build.ldscript = STM32H743VITX_FLASH_BL.ld
+board = generic_stm32h723vg
+board_build.ldscript = STM32H723VGTX_FLASH_BL.ld
 build_flags = ${env:btt_skr_30_h723_tmc5160_bl128.build_flags}
 {% for flag in grblhal_machine_build_flags %}
   {{ flag }}
