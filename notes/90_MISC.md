@@ -79,3 +79,85 @@ ls /dev/ttyACM*           # Serial device (usually /dev/ttyACM0)
 | Drivers | TMC5160 (UART mode) |
 | Flash Address | 0x08020000 |
 | PlatformIO Env | `btt_skr_30_h723_tmc5160_bl128` |
+
+# Pi Configuring
+
+## Repository Checkout
+        
+```bash
+git clone https://github.com/kakwa/btt-skr3-cnc
+cd btt-skr3-cnc/
+git submodule update --init --recursive
+```     
+
+## Pi Preparation
+
+### SDCard Flashing 
+
+Flash the OS to an SD card. Choose one of:
+
+- **Raspberry Pi**: Use Raspberry Pi Imager - https://www.raspberrypi.com/software/
+- **BTT Pi** (cheap & 24V, no 5V required): Use Armbian - https://www.armbian.com/bigtreetech-cb1/
+
+### Initial Setup
+
+**Find Pi IP Address via Ethernet (Quick DHCP Server Method):**
+
+If the Pi is not yet on your network, you can set up a quick DHCP server on your local machine to assign it an IP:
+
+```bash
+# On your local machine (Linux), install dnsmasq if not already installed
+sudo apt install dnsmasq
+
+# List network interfaces and pick your ethernet NIC (often eno1, eth0, enp*s0):
+ip addr
+
+# Assign a static address on the link to the Pi (replace eno1 with your interface):
+sudo ip addr add 192.168.100.1/24 dev eno1
+
+# Write a minimal dnsmasq config (replace eno1 with your interface):
+sudo tee /etc/dnsmasq.conf > /dev/null <<'EOF'
+interface=eno1
+dhcp-range=192.168.100.50,192.168.100.150,24h
+dhcp-option=3
+EOF
+
+# Run dnsmasq in foreground
+sudo dnsmasq -d -C /etc/dnsmasq.conf
+
+# ou should see the IP allocated to the Pi in the logs
+# if not, unplug and replug it
+```
+
+**Find Pi IP Address via Network Scan:**
+
+**Find Pi IP Address via Network Scan:**
+
+```bash
+# Scan network for Pi by MAC address prefix
+ip neigh | grep -E 'b8:27:eb|dc:a6:32|e4:5f:01|26:a4:ec'
+```
+
+**Configure WiFi (if needed):**
+
+```bash
+ssh root@<PI_IP>
+sudo nmtui
+```
+
+**Enable SSH root login:**
+
+```bash
+# Enable root login in SSH config
+sudo sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+```
+
+**Setup SSH key for passwordless access:**
+
+```bash
+# On your local machine, create SSH key if you don't have one
+ssh-keygen
+# Copy key to Pi
+ssh-copy-id root@<PI_IP>
+```

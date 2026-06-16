@@ -8,7 +8,50 @@ TODO
 
 ### Setup the Pi
 
-TODO ansible
+# Go in Ansible directory
+cd ansible/
+
+# Run Playbook
+
+```
+# Change it with your pi IP or hostname
+export PI_IP=192.168.42.42
+
+# May need to tweak root
+ansible-playbook -i "${PI_IP}," -u root pi-setup.yml
+```
+
+if everything went well, at the end you should get:
+
+```
+[...]
+
+TASK [grblhal-builder : Display helper scripts information] **********************************
+ok: [192.168.1.46] => {
+    "msg": [
+        "========================================",
+        "grblHAL Build Environment Ready!",
+        "========================================",
+        "Source directory: /opt/grblhal",
+        "Build directory: /opt/grblhal/build",
+        "Target board: BTT_SKR_3_EZ",
+        "MCU: STM32H7xx",
+        "PlatformIO environment: btt_skr_30_h723_tmc5160_bl128",
+        "",
+        "Helper scripts installed:",
+        "  - skr3-build    Build the firmware",
+        "  - skr3-flash    Flash the firmware via USB (DFU)",
+        "",
+        "Usage:",
+        "  skr3-build                    # Build firmware",
+        "  skr3-flash                    # Flash latest firmware (interactive)",
+        "  skr3-flash custom.bin         # Flash specific firmware file",
+        "",
+        "The flash script will guide you through the DFU bootloader process.",
+        "========================================"
+    ]
+}
+```
 
 TODO partial apply (--tags)
 
@@ -24,6 +67,21 @@ Build can be done with the following script:
 skr3-build
 ```
 
+
+You should get an output similar to:
+
+```
+[...]
+======================================================== 1 succeeded in 00:11:29.833 ========================================================
+Build successful!
+Firmware: .pio/build/btt_skr_30_h723_tmc5160_bl128/firmware.bin
+Firmware copied to: /opt/grblhal/build/firmware_latest.bin
+
+======================================
+Build Complete!
+======================================
+```
+
 Under the hood, it's using plateform.io/pio.
 It uses a custom environment (deployed at the Ansible step)
 TODO run with bash -x to get the details.
@@ -36,6 +94,26 @@ TODO location `/opt/grblhal`
 
 ```bash
 skr3-flash
+```
+
+You should get an output similar to:
+
+```
+[...]
+═══════════════════════════════════════
+  Flash Complete! ✓
+═══════════════════════════════════════
+
+To start the new firmware:
+
+Press the RESET button on the board
+        Press any key after you've pressed RESET...
+
+Waiting for board to restart...
+✓ Board is running! (Virtual COM Port detected)
+✓ Serial device: /dev/ttyACM0
+
+You can now connect to grblHAL via /dev/ttyACM0
 ```
 
 The script will guide you through:
@@ -94,3 +172,9 @@ upload_protocol = dfu
 ```
 
 If possible do the same changes in [TODO ANSIBLE PLAYBOOK REF]
+
+## Connect to gSender
+
+From there, if you are on the same network, you should be able to connect with the following URL: https://kwcnc.local (accept self-signed cert).
+
+Once connected you should be able to control the CNC or run gcode.
