@@ -7,7 +7,6 @@
     # grblHAL machine-specific build flags injected into [env:kwcnc_yeti] in platformio.ini
     grblhal_machine_build_flags:
       - '-D GRBL_BUILD_INFO=\"BTT-SKR3-TMC5160-SPI-XY-GANGED\"'
-      - "-D TRINAMIC_SPI_ENABLE=1"
       - "-D X_GANGED=1"
       - "-D X_AUTO_SQUARE=1"
       - "-D Y_GANGED=1"
