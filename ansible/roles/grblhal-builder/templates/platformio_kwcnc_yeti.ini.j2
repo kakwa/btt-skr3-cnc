@@ -2,10 +2,10 @@
 [env:kwcnc_yeti]
 board = generic_stm32h743vi
 board_build.ldscript = STM32H743VITX_FLASH_BL.ld
-build_flags = ${env:btt_skr_30_h743_tmc5160_bl128.build_flags}
+build_flags = ${env:btt_skr_30_h723_tmc5160_bl128.build_flags}
 {% for flag in grblhal_machine_build_flags %}
   {{ flag }}
 {% endfor %}
-lib_deps = ${env:btt_skr_30_h743_tmc5160_bl128.lib_deps}
-lib_extra_dirs = ${env:btt_skr_30_h743_tmc5160_bl128.lib_extra_dirs}
+lib_deps = ${env:btt_skr_30_h723_tmc5160_bl128.lib_deps}
+lib_extra_dirs = ${env:btt_skr_30_h723_tmc5160_bl128.lib_extra_dirs}
 upload_protocol = dfu
