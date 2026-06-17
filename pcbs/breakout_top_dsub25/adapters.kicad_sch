@@ -7,7 +7,7 @@
 	(title_block
 		(title "Yeti Adapter Board")
 		(date "2026-04-29")
-		(rev "0")
+		(rev "2")
 		(company "Kakwalab")
 	)
 	(lib_symbols
@@ -6068,7 +6068,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1-2-3.81_1x02_P3.81mm_Horizontal"
+		(property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal"
 			(at 130.81 30.48 0)
 			(hide yes)
 			(show_name no)
@@ -6726,7 +6726,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_JST:JST_XA_S06B-XASK-1_1x06_P2.50mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XA_S06B-XASK-1N-BN_1x06_P2.50mm_Horizontal"
 			(at 130.81 119.38 0)
 			(hide yes)
 			(show_name no)
@@ -7169,7 +7169,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1-2-3.81_1x02_P3.81mm_Horizontal"
+		(property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal"
 			(at 128.27 52.07 0)
 			(hide yes)
 			(show_name no)
@@ -7718,7 +7718,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_JST:JST_XA_S06B-XASK-1_1x06_P2.50mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XA_S06B-XASK-1N-BN_1x06_P2.50mm_Horizontal"
 			(at 54.61 72.39 0)
 			(hide yes)
 			(show_name no)
@@ -8532,7 +8532,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1-2-3.81_1x02_P3.81mm_Horizontal"
+		(property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal"
 			(at 129.54 76.2 0)
 			(hide yes)
 			(show_name no)
