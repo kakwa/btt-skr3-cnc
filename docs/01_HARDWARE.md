@@ -21,9 +21,8 @@
 
 ## Limit Switches <-> port mapping
 
-+------------------------+-----------+------+--------------+
 | Name                   | GRBLHAL   | Pin  | Board label  |
-+------------------------+-----------+------+--------------+
+|------------------------|-----------|------|--------------|
 | Z Limit Switch         | GPIOC 0   | PC0  | Z- STOP      |
 | Z Probe                | GPIOC 13  | PC13 | Probe        |
 | Y Limit Switch         | GPIOC 3   | PC3  | Y- STOP      |
@@ -31,7 +30,6 @@
 | X Limit Switch         | GPIOC 1   | PC1  | X- STOP      |
 | X Limit Max Switch     | GPIOX X   | PXX  | TODO         |
 | Collision Switch/ESTOP | GPIOA 7   | PA7  | EXP2 pin 5   |
-+------------------------+-----------+------+--------------+
 
 ## Breakout
 
