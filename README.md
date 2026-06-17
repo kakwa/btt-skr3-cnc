@@ -1,54 +1,41 @@
 # btt-skr3-cnc
 
-Reviving a [Yeti Tool SmartBench](https://www.yetitool.com/) CNC router with modern open-source hardware and firmware: [BTT SKR 3 EZ](https://github.com/bigtreetech/SKR-3) controller board running [grblHAL](https://github.com/grblHAL), managed by a [BTT Pi](https://github.com/bigtreetech/BTT-Pi) running [gSender](https://sienci.com/gsender/).
+Reviving a [Yeti Tool SmartBench](https://www.yetitool.com/) CNC router with new hardware and open-source firmware.
 
-The original SmartBench electronics were replaced entirely. This repo contains everything needed to reproduce the setup: firmware configuration, Pi provisioning via Ansible, custom adapter PCBs, and enclosure CAD files.
+This project replaces pretty much all the sketchy eletronics original electronics with an even sketckier setup.
+
+It keeps the original stepper motors, overal frame, and endstops.
 
 ## Project Status
 
-* [x] Pi configuration
-* [x] Base grblHAL setup
-* [~] End stops and safety stop configuration
-* [~] Proper enclosure for electronics
-* [~] Wiring/adapter board
+* [done] Pi configuration
+* [done] Base grblHAL setup
+* [done] Wiring/adapter board
+* [in-progress] End stops and safety stop configuration
+* [in-progress] Proper enclosure for electronics
 * [ ] Spindle control (optional)
 
-## Hardware
+## Hardware & Software components
 
-| Component | Details |
-|-----------|---------|
-| Controller board | [BTT SKR 3 EZ](https://github.com/bigtreetech/SKR-3) — STM32H723VG |
-| Stepper drivers | TMC5160 |
-| SBC | [BTT Pi](https://github.com/bigtreetech/BTT-Pi) |
-| Sender | [gSender](https://sienci.com/gsender/) |
-| Motors | X, Y, Z + ganged X2, Y2 |
+| Component           | Details                                                          |
+|---------------------|------------------------------------------------------------------|
+| Controller board    | [BTT SKR 3 EZ](https://github.com/bigtreetech/SKR-3)             |
+| Stepper drivers     | TMC5160                                                          |
+| SBC                 | [BTT Pi](https://github.com/bigtreetech/BTT-Pi) (or RPi > 3)     |
+| Firmware            | [grblHAL](https://github.com/grblHAL/core/blob/master/README.md) |
+| UI & gCode Uploader | [gSender](https://sienci.com/gsender/)                           |
+| Motors Setup        | X, Y, Z + ganged X2, Y2                                          |
 
 ## Repository Layout
 
-```
-.
-├── docs/           # Project documentation (start here)
-│   ├── 00_INTRO.md          # Project background and overview
-│   ├── 01_HARDWARE.md       # Wiring and board configuration
-│   ├── 02_INSTALL.md        # Pi OS and software installation
-│   ├── 03_CONFIGURATION.md  # grblHAL configuration
-│   ├── 04_TROUBLESHOOTING.md
-│   ├── 90_MISC.md           # Build notes and workarounds
-│   └── 99_SETTINGS.md       # grblHAL settings reference
-├── ansible/        # Ansible playbook to provision the BTT Pi
-│   ├── pi-setup.yml
-│   └── roles/      # avahi, gsender, grblhal-builder, nginx, …
-├── grblhal/        # grblHAL firmware (git submodule, STM32 driver)
-├── pcbs/           # KiCad PCB designs
-│   ├── breakout_top_dsub25/   # Top breakout board (DB25)
-│   ├── breakout_bottom_dsub25/
-│   ├── breakout_top_vga/
-│   └── adapters/
-├── cad/            # FreeCAD enclosure and mounting parts
-├── tests/          # G-code test files
-└── misc/           # Utility scripts and raw settings dumps
-```
+- `docs/` — project documentation (start here); numbered markdown files covering intro, hardware, install, configuration, troubleshooting, and settings
+- `ansible/` — Ansible playbook to provision the BTT Pi (roles: avahi, gsender, grblhal-builder, nginx, ...)
+- `grblhal/` — grblHAL firmware as a git submodule (STM32 driver)
+- `pcbs/` — KiCad PCB designs for the DB25 breakout boards and adapters
+- `cad/` — FreeCAD enclosure and mounting parts
+- `tests/` — G-code test files
+- `misc/` — utility scripts and raw settings dumps
 
 ## Documentation
 
-Full documentation lives in [`docs/`](docs/). Start with [docs/00_INTRO.md](docs/00_INTRO.md) for project background, then follow the numbered files in order.
+Project documentation is available in [`docs/`](docs/).
