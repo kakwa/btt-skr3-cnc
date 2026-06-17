@@ -1,22 +1,30 @@
 # Trying to revive a Yeti Tool SmartBench CNC
 
-## Introduction
+## Parts
 
-Last year, I joined a local fablab. If you like building stuff, I would highly recommend it.
-These are great places to learn new skills, spend time with wonderful people and play with machines out of reach of a typical toolbox.
+- **[01_HARDWARE.md](01_HARDWARE.md)** - BTT SKR 3 wiring guide for grblHAL
+- **[02_INSTALL.md](02_INSTALL.md)** - Base software setup (Pi, grblHAL build & flash)
+- **[03_CONFIGURATION.md](03_CONFIGURATION.md)** - grblHAL configuration
+- **[04_TROUBLESHOOTING.md](04_TROUBLESHOOTING.md)** - Troubleshooting and gotchas
+- **[90_MISC.md](90_MISC.md)** - Miscellaneous notes
+- **[99_SETTINGS.md](99_SETTINGS.md)** - grblHAL settings reference
 
-One of these tools in my local fablab is a CNC router by Yeti Tool. I would love to play with it, but unfortunately, it went out of service months before I joined.
+## Intro
+
+In 2025, I joined a local fablab. If you like building stuff, I would highly recommend it.
+These are great places to learn new skills, spend time with really nice people and play
+with machines typically out of reach of most.
+
+One of these our of reach tool is a SmartBench CNC router by YetiTool. Would love to play with it, but unfortunately, the board burnt-out, and it went out of service months before I joined.
 To complicate matters, [Yeti Tool went under in 2024](https://find-and-update.company-information.service.gov.uk/company/11310906/insolvency). Not ideal, even if [Trend UK](https://www.trend-eu.com/products/cnc-machines/trend-yeti-cnc-smartbench/trend-yeti-cnc-smartbench) stepped-up and started providing spare parts and support.
 
-In our case, it's the electronic boards which have various issues, from broken connectors to fried components.
-I'm not actually sure what the issues are. I could probably investigate and fix these, but I'm actually not too keen on it:
+While I could probably investigate and try fixing the issue, I'm not convinced it's the correct approach:
 
-1. the fix would likely be a fragile bodge work just waiting to break again.
-2. even if it worked, it would let the tool in an unmaintainable state, with no effective software support and partial hardware one.
-3. I would not learn as much.
+1. a fix would likely be a fragile bodge just waiting to break again.
+2. even if it lastis, it would let the tool in an unmaintainable state, with no effective software support and partial hardware one.
+3. It's less fun
 
-For all these reasons, plus my incurable Open Source ethos, I'm much more keen on trying to rebuild the whole controller & stepper drivers stuff.
-I might be way over my head, Dunning-Kruger style, but as we say, You Live Only Once, and it's a nice step up from a Voron 0.2 build.
+Given I already [built a Voron 0.2](https://www.youtube.com/watch?v=Ej5ZsTKy6t4), it should be easy pizzie lemon squizzy \</Dunning-Kruger syndrom\>.
 
 ## What Are The Options?
 
@@ -25,7 +33,6 @@ Let's limit ourselves to Open Source options, so no [Mach 4](https://www.mach-la
 ### LinuxCNC + Mesa Hardware
 
 [LinuxCNC](https://linuxcnc.org/) is the gold standard for OSS CNC control: mature, extremely capable, supports virtually any machine topology. But I would not learn that much from it, plus using a PC & Linux for Realtime stuff doesn't seem to fully click.
-
 
 ### FluidNC + ESP32
 
@@ -42,22 +49,3 @@ Let's limit ourselves to Open Source options, so no [Mach 4](https://www.mach-la
 - **BTT Pi** running **gSender** as the G-code sender and web UI
 
 For the UI, I picked [gSender](https://sienci.com/gsender/), which is quite nice and has frequent updates.
-
-## Table of Contents
-
-- [Introduction](#introduction)
-- [What Are The Options?](#what-are-the-options)
-  - [LinuxCNC + Mesa Hardware](#linuxcnc--mesa-hardware)
-  - [FluidNC + ESP32](#fluidnc--esp32)
-  - [grblHAL + STM32](#grblhal--stm32)
-  - [Final Choice: grblHAL + BTT SKR 3 + TMC5160 + Pi + gSender](#final-choice-grblhal--btt-skr-3--tmc5160--pi--gsender)
-- [Documentation](#documentation)
-
-## Documentation
-
-- **[01_HARDWARE.md](01_HARDWARE.md)** - BTT SKR 3 wiring guide for grblHAL
-- **[02_INSTALL.md](02_INSTALL.md)** - Base software setup (Pi, grblHAL build & flash)
-- **[03_CONFIGURATION.md](03_CONFIGURATION.md)** - grblHAL configuration
-- **[04_TROUBLESHOOTING.md](04_TROUBLESHOOTING.md)** - Troubleshooting and gotchas
-- **[90_MISC.md](90_MISC.md)** - Miscellaneous notes
-- **[99_SETTINGS.md](99_SETTINGS.md)** - grblHAL settings reference
