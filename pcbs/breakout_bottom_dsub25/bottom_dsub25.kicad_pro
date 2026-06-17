@@ -64,7 +64,7 @@
           "min_island_area": 10.0,
           "min_thickness": 0.25,
           "pad_connection": 1,
-          "remove_islands": 0,
+          "remove_islands": 1,
           "thermal_relief_gap": 0.5,
           "thermal_relief_spoke_width": 0.5
         }
@@ -256,7 +256,7 @@
       "internal_id": "",
       "mfg": "",
       "mpn": "",
-      "sch_revision": ""
+      "sch_revision": "2"
     },
     "layer_pairs": [],
     "layer_presets": [],
@@ -652,7 +652,7 @@
     "meta": {
       "version": 1
     },
-    "page_layout_descr_file": "",
+    "page_layout_descr_file": "KWCNC Yeti Breakout Board",
     "plot_directory": "",
     "reuse_designators": true,
     "subpart_first_id": 65,
@@ -664,7 +664,7 @@
         "uuid": "36cdabbf-675f-46a3-8745-6c7471a8ba73"
       }
     ],
-    "used_designators": "FID1-3",
+    "used_designators": "",
     "variants": []
   },
   "sheets": [
