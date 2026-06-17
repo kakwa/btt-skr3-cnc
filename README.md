@@ -13,7 +13,7 @@ It keeps the original stepper motors, overal frame, and endstops.
 * [done] Wiring/adapter board
 * [in-progress] End stops and safety stop configuration
 * [in-progress] Proper enclosure for electronics
-* [ ] Spindle control (optional)
+* [todo] Spindle control (optional)
 
 ## Hardware & Software components
 
