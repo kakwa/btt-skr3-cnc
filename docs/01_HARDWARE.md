@@ -36,43 +36,63 @@ with the twos requiring some wire harness to communicate and transmit power.
 
 The original harness was actually split in two chains: 
 * 4 conductors for 24V+230V for powering stuff.
-* 13 conductors for the logic and endspots stuff (the loom with the VGA connector).
+* 13 conductors for the logic and endstops stuff (the loom with the VGA connector).
 
 This split-up is good: it avoids possible interferences from the power wires.
-But the logic side did not had enough conductors (13) for my setup (3 end stops + 2 SPI TMC drivers connection).
-In truth, I even doubt it had enough conductors for the original electronic, the step/dir/enable pins of the two bottom/Y TMC drivers were shared and
-the SPI stuff not wired, which seems a bit iffy. 
+But the logic side did not have enough conductors (13) for my setup (3 end stops + 2 SPI TMC drivers connection).
+In truth, I even doubt it had enough conductors for the original electronics. The step/dir/enable pins of the two bottom/Y TMC drivers were shared and
+the SPI stuff not wired, which seems a bit iffy.
 
-So, after pondering the differente options (CAN bus, VGA, RJ45 cables, all drivers on top), I decided to replace the logic loom with a DB25 cable.
-This connectic and cable has enough connectors, is common enough, and should be easy to replace if needed. I'm just not sure the cable will like being flexed...
+So, after pondering the different options (CAN bus, VGA, RJ45 cables, all drivers on top), I decided to replace the logic loom with a DB25 cable.
+This connector and cable has enough pins, is common enough, and should be easy to replace if needed.
 
 Also, as a requirement, I wanted my setup to be fully reversible with the original electronics. So, no cutting and clamping endstops and motor cables.
 
-For all these reasons, I've designed two dumb breakout PCBs using kicad:
+For all these reasons, I've designed two dumb breakout PCBs using KiCad:
 
-* TODO link bottom pcb
-* TODO link top pcb
+* [Bottom breakout PCB](../pcbs/breakout_bottom_dsub25/)
+* [Top breakout PCB](../pcbs/breakout_top_dsub25/)
 
-TODO photos
+The end results looks like that:
 
-The role of these boards is to interconnect bottom and top (with the DB25 cable), and be the middle man for the existing wiring/connectors and what the SKR3 and the TMC 5160 drivers expect.
+![Custom PCBs — top (large) and bottom (small)](img/pcbs.jpg)
 
-They are also designe to offer a bit of flexibility/adjustments.
+The role of these boards is to interconnect the bottom and top components (via the DB25 cable), and act as adapters between the existing wiring/connectors and what the SKR3 and the TMC5160 drivers expect.
+They were also a good opportunity for me to learn KiCad.
 
-They were also a good opportunity for me to gently learn kicad. But if you are willing to cut some cables, manufacturing these PCBs is not necessary, A pair of DB25 breakout thingy could also work.
+But if you are willing to cut some cables, manufacturing these PCBs is not necessary - a pair of DB25 breakout boards with screw terminals can also work:
+![DB25 screw-terminal breakout boards (commercial alternative)](img/DB25_breakout.jpg)
 
-TODO photo db25 breakout
- 
 ## Stepper Motors & Drivers
 
-TODO explain which pins is needed to be wired between top and bottom
+Each TMC5160 driver requires at least the following signals routed from the SKR3:
 
-TODO show wiring of adapter thingy (main and secondary)
+* `STEP`, `DIR`, `EN` — motion control
+* `CS` — SPI chip-select (one per driver)
+* Shared SPI bus: `MOSI`, `MISO`, `SCK`
+* `24V`, `GND` — shared power rails
+
+So to connect the Y drivers at the bottom to the SKR 3 board, we need two adapters thinggies like that:
+
+![Main motor connector adapter](img/custom_connector_main.jpg)
+
+![Secondary motor connector adapter](img/custom_connector_secondary.jpg)
+
+
+![TMC5160 drivers installed on the SKR3](img/stepper_controller_wiring.jpg)
+
+With almost everything connected, things look a bit unwildy:
+
+![Top electronics enclosure — top PCB, SKR3, and TMC5160 drivers](img/top_wiring.jpg)
+
+The bottom is a bit more manageable:
+
+![Bottom breakout board installed, with Y stepper connectors and DB25 cable](img/bottom_board.jpg)
 
 ## Limit Switches, Probe, and Safeties
 
-TODO add pinout boards SKR 3 with annotations for endstops
+TODO (schema)
 
 ## Spindle
 
-TODO: not handled currently (fixed speed, started manually for now)
+Not handled currently — the spindle runs at fixed speed and is started manually before the job.
