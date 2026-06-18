@@ -17,7 +17,7 @@
 * Extruder 0 -> X2 (ganged)
 * Extruder 1 -> Y2 (ganged)
 
-## Limit Switches <-> port mapping
+## Limit Switches — Port Mapping
 
 | Name                   | GRBLHAL   | Pin  | Board label |
 |------------------------|-----------|------|-------------|
@@ -31,36 +31,36 @@
 
 ## Breakout Boards
 
-The SmartBench design forces more or less to split the electronic in two: one part on the top/toolhead, the other bellow the spoilboard,
-with the twos requiring some wire harness to communicate and transmit power.
+The SmartBench design requires splitting the electronics in two: one part on the top/toolhead, the other below the spoilboard,
+with both requiring a wire harness to communicate and transmit power.
 
-The original harness was actually split in two chains: 
+The original harness was split in two chains:
 * 4 conductors for 24V+230V for powering stuff.
-* 13 conductors for the logic and endstops stuff (the loom with the VGA connector).
+* 13 conductors for the logic and endstops (the loom with the VGA connector).
 
-This split-up is good: it avoids possible interferences from the power wires.
-But the logic side did not have enough conductors (13) for my setup (3 end stops + 2 SPI TMC drivers connection).
-In truth, I even doubt it had enough conductors for the original electronics. The step/dir/enable pins of the two bottom/Y TMC drivers were shared and
-the SPI stuff not wired, which seems a bit iffy.
+This split is good: it avoids interference from the power wires.
+However, the logic side did not have enough conductors (13) for my setup (3 endstops + 2 SPI TMC drivers).
+I even doubt it had enough conductors for the original electronics — the step/dir/enable pins of the two bottom/Y TMC drivers were shared and
+the SPI lines were not wired, which seems iffy.
 
-So, after pondering the different options (CAN bus, VGA, RJ45 cables, all drivers on top), I decided to replace the logic loom with a DB25 cable.
-This connector and cable has enough pins, is common enough, and should be easy to replace if needed.
+After considering the options (CAN bus, VGA, RJ45 cables, all drivers on top), I decided to replace the logic loom with a DB25 cable.
+This connector has enough pins, is common, and should be easy to replace if needed.
 
-Also, as a requirement, I wanted my setup to be fully reversible with the original electronics. So, no cutting and clamping endstops and motor cables.
+I also wanted the setup to be fully reversible with the original electronics — no cutting or clamping of endstop and motor cables.
 
-For all these reasons, I've designed two dumb breakout PCBs using KiCad:
+For all these reasons, I designed two breakout PCBs using KiCad:
 
 * [Bottom breakout PCB](../pcbs/breakout_bottom_dsub25/)
 * [Top breakout PCB](../pcbs/breakout_top_dsub25/)
 
-The end results looks like that:
+The end result looks like this:
 
 ![Custom PCBs — top (large) and bottom (small)](img/pcbs.jpg)
 
-The role of these boards is to interconnect the bottom and top components (via the DB25 cable), and act as adapters between the existing wiring/connectors and what the SKR3 and the TMC5160 drivers expect.
-They were also a good opportunity for me to learn KiCad.
+These boards interconnect the bottom and top components (via the DB25 cable) and act as adapters between the existing wiring/connectors and what the SKR3 and the TMC5160 drivers expect.
+They were also a good opportunity to learn KiCad.
 
-But if you are willing to cut some cables, manufacturing these PCBs is not necessary - a pair of DB25 breakout boards with screw terminals can also work:
+If you are willing to cut some cables, manufacturing these PCBs is not necessary — a pair of DB25 breakout boards with screw terminals can also work:
 ![DB25 screw-terminal breakout boards (commercial alternative)](img/DB25_breakout.jpg)
 
 ## Stepper Motors & Drivers
@@ -72,7 +72,7 @@ Each TMC5160 driver requires at least the following signals routed from the SKR3
 * Shared SPI bus: `MOSI`, `MISO`, `SCK`
 * `24V`, `GND` — shared power rails
 
-So to connect the Y drivers at the bottom to the SKR 3 board, we need two adapters thinggies like that:
+To connect the Y drivers at the bottom to the SKR 3 board, two cable adapters are needed:
 
 ![Main motor connector adapter](img/custom_connector_main.jpg)
 
@@ -81,7 +81,7 @@ So to connect the Y drivers at the bottom to the SKR 3 board, we need two adapte
 
 ![TMC5160 drivers installed on the SKR3](img/stepper_controller_wiring.jpg)
 
-With almost everything connected, things look a bit unwildy:
+With almost everything connected, things look a bit unwieldy:
 
 ![Top electronics enclosure — top PCB, SKR3, and TMC5160 drivers](img/top_wiring.jpg)
 
