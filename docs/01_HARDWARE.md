@@ -88,11 +88,13 @@ The end result looks like this:
 
 ![TMC5160 drivers installed](img/stepper_controller_wiring.jpg)
 
+> !Notes
+> Most of the more and straight forward usual wiring (PSU, 24V, Stepper loops) is left to the reader.
+> However keep in mind the ganded stepper must be mirrored, so if necessary, maybe switch A with B loops on X2/Y2.
+
 ## Limit Switches, Probe, and Safeties
 
-
 Port mapping can be found in the [grblHAL board header file for the SKR3](../grblhal/boards/btt_skr_v3.0_map.h).
-
 
 | Name                   | GRBLHAL   | Pin  | Board label |
 |------------------------|-----------|------|-------------|
@@ -103,7 +105,6 @@ Port mapping can be found in the [grblHAL board header file for the SKR3](../grb
 | X Limit Switch         | GPIOC 1   | PC1  | X- STOP     |
 | X Limit Max Switch     | GPIOC 2   | PC2  | E0DET       |
 | Collision Switch/ESTOP | GPIOA 7   | PA7  | EXP2 pin 5  |
-
 
 ![Endstop](img/endstop_wiring.svg)
 
