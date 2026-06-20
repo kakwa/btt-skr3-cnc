@@ -136,9 +136,11 @@ $144=1200    # M4 axis current
 ### Steps per mm
 
 ```bash
-$100=80      # X steps/mm
-$101=80      # Y steps/mm
-$102=400     # Z steps/mm (example for lead screw)
+$100=80.0    # X steps/mm
+$101=53.33   # Y steps/mm (calibrated: 80 × 100/150)
+$102=266.67  # Z steps/mm (calibrated: 400 × 100/150)
+$103=80.0    # X2 steps/mm (ganged, same as X)
+$104=53.33   # Y2 steps/mm (ganged, same as Y)
 ```
 
 ---
