@@ -67,28 +67,28 @@ Here is the non-EZ pinout for reference:
 
 To connect the Y drivers at the bottom to the SKR 3 board, two adapters are needed.
 
-They can be build easily with a prototype board (strip/bread board) + some wires:
+They can be built easily with a prototype board (strip/breadboard) and some wires:
 
 ![Main motor connector adapter](img/custom_connector_main.jpg)
 
-On main, we need to wire everything:
+On the main adapter, everything must be wired:
 * SPI bus
-* X1 specific pins (dir, enable, step, chip select)
-* power & GND
+* X1-specific pins (DIR, EN, STEP, CS)
+* Power & GND
 
 ![Secondary motor connector adapter](img/custom_connector_secondary.jpg)
 
-On the secondary, only X2 specific stuff are need.
+On the secondary, only X2-specific signals are needed.
 
-They need to be wired like that:
+They need to be wired like this:
 
-![Stepper Controler Wiring](img/stepper_wiring.svg)
+![Stepper Controller Wiring](img/stepper_wiring.svg)
 
-The end results looks like that
+The end result looks like this:
 
-![TMC5160 drivers installe](img/stepper_controller_wiring.jpg)
+![TMC5160 drivers installed](img/stepper_controller_wiring.jpg)
 
-With almost everything connected, things look a bit unwieldy:
+With almost everything connected:
 
 ![Top electronics enclosure — top PCB, SKR3, and TMC5160 drivers](img/top_wiring.jpg)
 
@@ -99,7 +99,7 @@ The bottom is a bit more manageable:
 ## Limit Switches, Probe, and Safeties
 
 
-Port Mapping can be found in [TODO grblhal board skr3 header file link]
+Port mapping can be found in the [grblHAL board header file for the SKR3](../grblhal/boards/btt_skr_v3.0_map.h).
 
 
 | Name                   | GRBLHAL   | Pin  | Board label |
@@ -117,9 +117,10 @@ Port Mapping can be found in [TODO grblhal board skr3 header file link]
 
 ## Drag Chain
 
-For the DB25 cables (and maybe the Power Supply for 230+24V), you can use:
+For the DB25 cables (and optionally the power supply for 230V+24V), you can use the drag chain links designed for this build:
 
-TODO link CAD chain
+* [`chain_link_v2-clip.scad`](../cad/misc/chain_link_v2-clip.scad) — OpenSCAD source for chain links
+* [`end1.FCStd`](../cad/misc/end1.FCStd) / [`end2.FCStd`](../cad/misc/end2.FCStd) — FreeCAD models for chain ends
 
 ## Spindle
 
