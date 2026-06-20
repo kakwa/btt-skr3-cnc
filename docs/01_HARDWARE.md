@@ -90,7 +90,7 @@ The end result looks like this:
 
 > !Notes
 > Most of the more and straight forward usual wiring (PSU, 24V, Stepper loops) is left to the reader.
-> However keep in mind the ganded stepper must be mirrored, so if necessary, maybe switch A with B loops on X2/Y2.
+> However keep in mind the ganded stepper must be mirrored and turning in opposite directions, so if necessary, switch A loop with B loop on X2/Y2.
 
 ## Limit Switches, Probe, and Safeties
 
