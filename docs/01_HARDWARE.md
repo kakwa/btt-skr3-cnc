@@ -88,14 +88,6 @@ The end result looks like this:
 
 ![TMC5160 drivers installed](img/stepper_controller_wiring.jpg)
 
-With almost everything connected:
-
-![Top electronics enclosure — top PCB, SKR3, and TMC5160 drivers](img/top_wiring.jpg)
-
-The bottom is a bit more manageable:
-
-![Bottom breakout board installed, with Y stepper connectors and DB25 cable](img/bottom_board.jpg)
-
 ## Limit Switches, Probe, and Safeties
 
 
@@ -113,7 +105,7 @@ Port mapping can be found in the [grblHAL board header file for the SKR3](../grb
 | Collision Switch/ESTOP | GPIOA 7   | PA7  | EXP2 pin 5  |
 
 
-![Endstop](img/endstops_wiring.svg)
+![Endstop](img/endstop_wiring.svg)
 
 ## Drag Chain
 
@@ -125,3 +117,15 @@ For the DB25 cables (and optionally the power supply for 230V+24V), you can use 
 ## Spindle
 
 Not handled currently — the spindle runs at fixed speed and is started manually before the job.
+
+## Resulting Jungle
+
+With almost everything connected:
+
+![Top electronics enclosure — top PCB, SKR3, and TMC5160 drivers](img/top_wiring.jpg)
+
+The bottom is a bit more manageable:
+
+![Bottom breakout board installed, with Y stepper connectors and DB25 cable](img/bottom_board.jpg)
+
+
