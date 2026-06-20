@@ -17,18 +17,6 @@
 * Extruder 0 -> X2 (ganged)
 * Extruder 1 -> Y2 (ganged)
 
-## Limit Switches — Port Mapping
-
-| Name                   | GRBLHAL   | Pin  | Board label |
-|------------------------|-----------|------|-------------|
-| Z Limit Switch         | GPIOC 0   | PC0  | Z- STOP     |
-| Z Probe                | GPIOC 13  | PC13 | Probe       |
-| Y Limit Switch         | GPIOC 3   | PC3  | Y- STOP     |
-| Y Limit Max Switch     | GPIOX X   | PXX  | TODO        |
-| X Limit Switch         | GPIOC 1   | PC1  | X- STOP     |
-| X Limit Max Switch     | GPIOX X   | PXX  | TODO        |
-| Collision Switch/ESTOP | GPIOA 7   | PA7  | EXP2 pin 5  |
-
 ## Breakout Boards
 
 The SmartBench design requires splitting the electronics in two: one part on the top/toolhead, the other below the spoilboard,
@@ -72,14 +60,33 @@ Each TMC5160 driver requires at least the following signals routed from the SKR3
 * Shared SPI bus: `MOSI`, `MISO`, `SCK`
 * `24V`, `GND` — shared power rails
 
-To connect the Y drivers at the bottom to the SKR 3 board, two cable adapters are needed:
+Here is the non-EZ pinout for reference:
+
+![Reference Pinout](img/TMC5160TProv1_12.png)
+
+
+To connect the Y drivers at the bottom to the SKR 3 board, two adapters are needed.
+
+They can be build easily with a prototype board (strip/bread board) + some wires:
 
 ![Main motor connector adapter](img/custom_connector_main.jpg)
 
+On main, we need to wire everything:
+* SPI bus
+* X1 specific pins (dir, enable, step, chip select)
+* power & GND
+
 ![Secondary motor connector adapter](img/custom_connector_secondary.jpg)
 
+On the secondary, only X2 specific stuff are need.
 
-![TMC5160 drivers installed on the SKR3](img/stepper_controller_wiring.jpg)
+They need to be wired like that:
+
+![Stepper Controler Wiring](img/stepper_wiring.svg)
+
+The end results looks like that
+
+![TMC5160 drivers installe](img/stepper_controller_wiring.jpg)
 
 With almost everything connected, things look a bit unwieldy:
 
@@ -91,7 +98,28 @@ The bottom is a bit more manageable:
 
 ## Limit Switches, Probe, and Safeties
 
-TODO (schema)
+
+Port Mapping can be found in [TODO grblhal board skr3 header file link]
+
+
+| Name                   | GRBLHAL   | Pin  | Board label |
+|------------------------|-----------|------|-------------|
+| Z Limit Switch         | GPIOC 0   | PC0  | Z- STOP     |
+| Z Probe                | GPIOC 13  | PC13 | Probe       |
+| Y Limit Switch         | GPIOC 3   | PC3  | Y- STOP     |
+| Y Limit Max Switch     | GPIOC 15  | PC15 | PWRDET      |
+| X Limit Switch         | GPIOC 1   | PC1  | X- STOP     |
+| X Limit Max Switch     | GPIOC 2   | PC2  | E0DET       |
+| Collision Switch/ESTOP | GPIOA 7   | PA7  | EXP2 pin 5  |
+
+
+![Endstop](img/endstops_wiring.svg)
+
+## Drag Chain
+
+For the DB25 cables (and maybe the Power Supply for 230+24V), you can use:
+
+TODO link CAD chain
 
 ## Spindle
 
