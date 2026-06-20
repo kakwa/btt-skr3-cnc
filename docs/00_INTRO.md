@@ -15,16 +15,16 @@ In 2025, I joined a local fablab. If you like building stuff, I would highly rec
 These are great places to learn new skills, spend time with really nice people and play
 with machines typically out of reach of most.
 
-One of these our of reach tool is a SmartBench CNC router by YetiTool. Would love to play with it, but unfortunately, the board burnt-out, and it went out of service months before I joined.
-To complicate matters, [Yeti Tool went under in 2024](https://find-and-update.company-information.service.gov.uk/company/11310906/insolvency). Not ideal, even if [Trend UK](https://www.trend-eu.com/products/cnc-machines/trend-yeti-cnc-smartbench/trend-yeti-cnc-smartbench) stepped-up and started providing spare parts and support.
+One of these out-of-reach tools is a SmartBench CNC router by YetiTool. Would love to play with it, but unfortunately, the board burnt out, and it went out of service months before I joined.
+To complicate matters, [Yeti Tool went under in 2024](https://find-and-update.company-information.service.gov.uk/company/11310906/insolvency). Not ideal, even if [Trend UK](https://www.trend-eu.com/products/cnc-machines/trend-yeti-cnc-smartbench/trend-yeti-cnc-smartbench) stepped up and started providing spare parts and support.
 
 While I could probably investigate and try fixing the issue, I'm not convinced it's the correct approach:
 
 1. a fix would likely be a fragile bodge just waiting to break again.
-2. even if it lastis, it would let the tool in an unmaintainable state, with no effective software support and partial hardware one.
+2. even if it lasts, it would leave the tool in an unmaintainable state, with no effective software support and partial hardware one.
 3. It's less fun
 
-Given I already [built a Voron 0.2](https://www.youtube.com/watch?v=Ej5ZsTKy6t4), it should be easy pizzie lemon squizzy \</Dunning-Kruger syndrom\>.
+Given I already [built a Voron 0.2](https://www.youtube.com/watch?v=Ej5ZsTKy6t4), it should be easy pizzie lemon squizzy </Dunning-Kruger syndrome>.
 
 ## What Are The Options?
 

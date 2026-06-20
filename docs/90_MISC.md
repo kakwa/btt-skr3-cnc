@@ -80,7 +80,7 @@ ls /dev/ttyACM*           # Serial device (usually /dev/ttyACM0)
 | Flash Address | 0x08020000 |
 | PlatformIO Env | `btt_skr_30_h723_tmc5160_bl128` |
 
-# Pi Configuring
+## Pi Setup
 
 ## Repository Checkout
         
@@ -92,7 +92,7 @@ git submodule update --init --recursive
 
 ## Pi Preparation
 
-### SDCard Flashing 
+### SD Card Flashing
 
 Flash the OS to an SD card. Choose one of:
 
@@ -125,11 +125,9 @@ EOF
 # Run dnsmasq in foreground
 sudo dnsmasq -d -C /etc/dnsmasq.conf
 
-# ou should see the IP allocated to the Pi in the logs
+# You should see the IP allocated to the Pi in the logs
 # if not, unplug and replug it
 ```
-
-**Find Pi IP Address via Network Scan:**
 
 **Find Pi IP Address via Network Scan:**
 

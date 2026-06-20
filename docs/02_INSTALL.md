@@ -11,15 +11,13 @@ board's IP address — you'll need it for the Ansible step.
 
 The playbook targets **Debian arm64** and expects to run as `root` over SSH.
 
-### Setup the Pi
+### Set Up the Pi
 
-# Go in Ansible directory
+```bash
+# Go into the Ansible directory
 cd ansible/
 
-# Run Playbook
-
-```
-# Change it with your pi IP or hostname
+# Change this to your Pi's IP or hostname
 export PI_IP=192.168.42.42
 
 # May need to tweak root
@@ -147,15 +145,15 @@ The script will guide you through:
 2. Flashing the firmware
 3. Resetting the board to run the new firmware
 
-Once again, run the script with bash -x to get the details.
+To see every command executed, run `bash -x skr3-flash`.
 
-Once flash available on port `/dev/ttyACM0` *@115200**.
+Once flashed, the board is available on `/dev/ttyACM0` at 115200 baud.
 
 ```bash
 cnc-console
 ```
 
-## Configuration tweaks:
+## Configuration Tweaks
 
 ```bash
 vim /opt/grblhal/platformio.ini

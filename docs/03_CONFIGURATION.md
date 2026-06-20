@@ -9,7 +9,7 @@ TODO settings references in links
 TODO Make it persistent (warning could be lost, etc)
 TODO how to find the corresponding -D #define
 
-## Tunning Points
+## Tuning Points
 
 ### Direction
 
