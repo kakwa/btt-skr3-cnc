@@ -38,6 +38,11 @@ inner_axis=0; // [1:true, 0:false]
 // true: print the snap-in clip beside the link; false: only print the link (no clip printed)
 clip=1; // [1:true, 0:false]
 
+// true: add end chain attaching leg on the outter side; false: no leg
+end_leg_outter=0; // [1:true, 0:false]
+// true: add end chain attaching leg on the inner side; false: no leg
+end_leg_inner=0; // [1:true, 0:false]
+
 /* [Further Settings] */
 // Extra clearance on mating surfaces to account for FDM dimensional variance
 tolerance = 0.001;
