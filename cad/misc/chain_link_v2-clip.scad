@@ -43,6 +43,10 @@ end_leg_outter=0; // [1:true, 0:false]
 // true: add end chain attaching leg on the inner side; false: no leg
 end_leg_inner=0; // [1:true, 0:false]
 
+/* [Legs] */
+// Length of the end attaching legs
+leg_length=30; // [5:5:100]
+
 /* [Further Settings] */
 // Extra clearance on mating surfaces to account for FDM dimensional variance
 tolerance = 0.001;
@@ -128,7 +132,7 @@ module outcut(width, radius, l1, h1, thick, angle, inner_axis)
 // Cuts the inner fork at the opposite end of the link — the fork cradles the ears of
 // the next link and carries the opposite half of the pivot joint (pin or socket,
 // whichever outcut didn't provide).
-module incut(width, radius, l1, h1, thick, angle, inner_axis)
+module incut(width, radius, l1, h1, thick, angle, inner_axis, end_leg_inner=0)
 {
     width2 = width - 2*(thick-tolerance);
 
@@ -137,7 +141,7 @@ module incut(width, radius, l1, h1, thick, angle, inner_axis)
             translate([0,0,-(h1/2)]) cube([width2,radius*2,h1], true);
             translate([0,0,0]) rotate([180-angle,0,0]) translate([0,radius/2,0]) cube([width2, radius, radius*2], true);
             translate([0,0,0]) rotate([0, 90, 0]) cylinder(width2, r = radius, center = true, $fn=200);
-            if (!inner_axis) {
+            if (!inner_axis && !end_leg_inner) {
                 axis_hole((width-thick)/2+tolerance, -(tolerance/2), 0,thick,radius);
                 mirror([1,0,0]) axis_hole((width-thick)/2+tolerance, -(tolerance/2), 0,thick,radius);
             }
@@ -215,12 +219,62 @@ module clip(width, height, length, tol=0)
     }
 }
 
+// Oval mounting slot with chamfered entry edges on both faces.
+// oval_w × oval_l footprint (slot oriented along X), cut through `thickness` of material.
+module oval_slot(oval_w, oval_l, chamfer, thickness)
+{
+    r    = oval_w / 2;
+    span = (oval_l - oval_w) / 2;
+    hull() {
+        translate([-span, 0, 0]) cylinder(h=thickness+0.02, r=r, center=true, $fn=100);
+        translate([ span, 0, 0]) cylinder(h=thickness+0.02, r=r, center=true, $fn=100);
+    }
+    hull() {
+        translate([-span, 0,  thickness/2-chamfer]) cylinder(h=chamfer+0.01, r1=r, r2=r+chamfer, $fn=100);
+        translate([ span, 0,  thickness/2-chamfer]) cylinder(h=chamfer+0.01, r1=r, r2=r+chamfer, $fn=100);
+    }
+}
+
+// Flat mounting leg extending in the +Y direction from y=0 (the call site translates
+// to the link's rectangular-body end at y=±l1/2).
+// Profile: full-width flat attachment face; 2 mm chamfered corners at the far end only.
+// Two 3×4.5 mm oval slots with 1 mm chamfer, spaced 6.5 mm apart (centered on leg length).
+module end_leg(width, height, leg_length)
+{
+    _thick      = min(2, max(1, 0.1 * width));   // wall thickness (mirrors chain_link formula)
+    _th         = max(_thick, _thick * height / width);   // cable channel floor thickness
+    cable_diam  = height - _th;          // C-channel opening diameter (= 2×r in middle module)
+    leg_thick   = height - cable_diam;   // solid material below the cable channel
+    cx        = 4;    // chamfer run along X per corner at far end
+    cy        = 10;   // chamfer run along Y at far end
+    oval_w    = 3;
+    oval_l    = 4.5;
+    oval_ch   = 1;
+    hole_gap  = 8.0;
+
+    hole_y2 = leg_length - 3 - oval_l / 2;   // 3 mm edge distance from far end
+    hole_y1 = hole_y2 - hole_gap;
+
+    difference() {
+        linear_extrude(height=leg_thick) polygon([
+            [-width/2,        0              ],
+            [-width/2,        leg_length - cy],
+            [-width/2 + cx,   leg_length     ],
+            [ width/2 - cx,   leg_length     ],
+            [ width/2,        leg_length - cy],
+            [ width/2,        0              ],
+        ]);
+        translate([0, hole_y1, leg_thick/2]) rotate([0, 0, 90]) oval_slot(oval_w, oval_l, oval_ch, leg_thick);
+        translate([0, hole_y2, leg_thick/2]) rotate([0, 0, 90]) oval_slot(oval_w, oval_l, oval_ch, leg_thick);
+    }
+}
+
 // Main assembly: combines all modules into a single printable chain link.
 // thick is clamped between 1 and 2 mm regardless of width to keep walls printable.
 // len is floored at 2*(height+thick) so the link is always long enough to form a proper joint.
 // When clip=true the clip slot is cut into the link and the clip body is placed beside it,
 // ready to print in the same job without supports.
-module chain_link(width, length, height, under_angle, over_angle, inner_axis, clip)
+module chain_link(width, length, height, under_angle, over_angle, inner_axis, clip, end_leg_outter=0, end_leg_inner=0)
 {
     thick = min(2,max(1, 0.1*width));
     radius = height / 2;
@@ -230,15 +284,19 @@ module chain_link(width, length, height, under_angle, over_angle, inner_axis, cl
     under  = min(max_angle, under_angle);
     over   = min(max_angle, over_angle);
 
-    difference() {
-        outline(width, len, height, radius, l1, under);
-        outcut(width, radius, l1, h1, thick, over,  inner_axis);
-        middle(width, radius, len, height, l1, h1, thick, over, under, inner_axis);
-        incut(width, radius, l1, h1, thick, over, inner_axis);
-        clip(width, height, len, tolerance);  // cut the clip slot with added tolerance
+    union() {
+        difference() {
+            outline(width, len, height, radius, l1, under);
+            if (!end_leg_outter) outcut(width, radius, l1, h1, thick, over, inner_axis);
+            middle(width, radius, len, height, l1, h1, thick, over, under, inner_axis);
+            incut(width, radius, l1, h1, thick, over, inner_axis, end_leg_inner);
+            clip(width, height, len, tolerance);  // cut the clip slot with added tolerance
+        }
+            if (end_leg_outter)               end_leg(width, height, leg_length);
+        if (end_leg_inner)  mirror([0,1,0]) end_leg(width, height, leg_length);
     }
-    // Place the clip body beside the link (not overlapping) for single-print convenience
-    if(clip) translate([0, 2+height+len/2, (len/10)/2])rotate([90, 0, 0])clip(width, height, len);
+    // Shift clip further out when the outer leg occupies the +Y side
+    if(clip) translate([0, (end_leg_outter ? leg_length : len/2) + 2 + height, (len/10)/2]) rotate([90, 0, 0]) clip(width, height, len);
 }
 
 // Preview helper: renders three links articulated at their maximum bending angles
@@ -259,4 +317,4 @@ module debug(width, length, height, under_angle, over_angle, inner_axis)
 //debug(15, 18, 10, 30, 30, true);
 
 //render Chain Link
-chain_link(width, length, height, under_angle, over_angle, inner_axis, clip);
+chain_link(width, length, height, under_angle, over_angle, inner_axis, clip, end_leg_outter, end_leg_inner);
