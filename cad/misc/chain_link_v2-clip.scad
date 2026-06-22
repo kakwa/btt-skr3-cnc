@@ -28,7 +28,7 @@ max_angle = 50;
 // Max angle the chain can bend downward (toward the base)
 under_angle=0; // [50]
 // Max angle the chain can bend upward (away from the base)
-over_angle=30; // [50]
+over_angle=45; // [50]
 
 /* [Variant] */
 // true: pivot pins point inward (female outer shell); false: pins point outward (male outer shell)
@@ -40,44 +40,49 @@ clip=1; // [1:true, 0:false]
 
 /* [Further Settings] */
 // Extra clearance on mating surfaces to account for FDM dimensional variance
-tolerance = 0.2;
+tolerance = 0.001;
 
 // Builds the outer shell of one link: a rectangular body with rounded cylindrical ends.
 // The angular wedge cuts at each end shape the bending pocket so adjacent links can
 // rotate up to `angle` degrees without the shells clashing.
 module outline(width, length, height, radius, l1, angle)
 {
-	y_ofs = l1 / 2;
-	t     = radius / 2;
+    y_ofs = l1 / 2;
+    t     = radius / 2;
 
-	difference() {
-		union() {
-			translate([0, 0, height/2])    cube([width,l1,height], true);
-			translate([0, -y_ofs, radius]) rotate([0, 90, 0]) cylinder(width, r = radius, center = true, $fs=0.5);
-			translate([0,  y_ofs, radius]) rotate([0, 90, 0]) cylinder(width, r = radius, center = true, $fs=0.5);
-			// Wedge extensions allow the rounded end to sweep through the bend angle without gap
-			translate([0, -y_ofs, radius]) rotate([angle,     0, 0]) translate([0, -t, -t]) cube([width,radius,radius], true);
-			translate([0,  y_ofs, radius]) rotate([360-angle, 0, 0]) translate([0,  t, -t]) cube([width,radius,radius], true);
-		}
-		// Trim the bottom flat so the printed part sits flush on the bed
-		translate([0, 0, -(t/2)]) cube([width,length,t], true);
-	}
+    difference() {
+        union() {
+            translate([0, 0, height/2])    cube([width,l1,height], true);
+            translate([0, -t, t])   cube([width,l1,height/2], true);
+            translate([0, -y_ofs, radius]) rotate([0, 90, 0]) cylinder(width, r = radius, center = true, $fn=200);
+            translate([0, -y_ofs -t , radius-t]) rotate([0, 90, 0]) cylinder(width, r = t, center = true, $fn=200);
+            translate([0,  y_ofs, radius]) rotate([0, 90, 0]) cylinder(width, r = radius, center = true, $fn=200);
+            // Wedge extensions allow the rounded end to sweep through the bend angle without gap
+            translate([0, -y_ofs, radius]) rotate([angle,     0, 0]) translate([0, -t, -t + t/2]) cube([width,radius,t], true);
+            translate([0,  y_ofs, radius]) rotate([360-angle, 0, 0]) translate([0,  t/2, -t]) cube([width,radius/2,radius], true);
+            translate([0,  y_ofs+t, radius+t/2]) rotate([360-angle, 0, 0]) translate([0,  t/2, -t]) cube([width,radius/2,t], true);
+            translate([0,  y_ofs, radius]) rotate([0, 90, 0]) cylinder(width, r = radius, center = true, $fn=200);
+            translate([0, y_ofs +t , radius-t]) rotate([0, 90, 0]) cylinder(width, r = t, center = true, $fn=200);
+        }
+        // Trim the bottom flat so the printed part sits flush on the bed
+        translate([0, 0, -(t/2)]) cube([width,length,t], true);
+    }
 }
 
 // Tapered pivot pin — narrower at the tip so it self-aligns when pressing links together.
 // The taper also provides a slight press-fit retention in the matching axis_hole.
 module axis(x_ofs, y_ofs, z_ofs, length, radius)
 {
-	rad = (radius * 0.25);
-	translate([x_ofs,y_ofs,z_ofs]) rotate([0, 90, 0]) cylinder(length+tolerance, r1 = rad*1.25, r2 = rad, center = true, $fs=0.25);
+    rad = (radius * 0.25);
+    translate([x_ofs,y_ofs,z_ofs]) rotate([0, 90, 0]) cylinder(length+tolerance, r1 = rad*1.25, r2 = rad, center = true, $fn=200);
 }
 
 // Matching tapered socket for the pivot pin. Scaled up by tolerance so the pin slides in
 // without friction but cannot rattle sideways during articulation.
 module axis_hole(x_ofs, y_ofs, z_ofs, length, radius)
 {
-	rad = (radius * 0.25) * 1.25;
-	translate([x_ofs,y_ofs,z_ofs]) rotate([0, 90, 0]) cylinder(length+tolerance, r1 = rad+tolerance, r2 = rad, center = true, $fs=0.25);
+    rad = (radius * 0.25) * 1.25;
+    translate([x_ofs,y_ofs,z_ofs]) rotate([0, 90, 0]) cylinder(length+tolerance, r1 = rad+tolerance, r2 = rad, center = true, $fn=200);
 }
 
 // Cuts the outer ear on one side of one link end.
@@ -86,33 +91,33 @@ module axis_hole(x_ofs, y_ofs, z_ofs, length, radius)
 // printed with opposite inner_axis values to mate correctly.
 module outcut0(width, radius, h1, thick, angle, inner_axis)
 {
-	w = (width - thick)/2;
-	t = thick + tolerance/2;
+    w = (width - thick)/2;
+    t = thick + tolerance/2;
 
-	translate([w, 0, 0]) union() {
-		difference() {
-			union() {
-				translate([0,0,h1/2]) cube([t,radius*2, h1], true);
-				// Angular wedge mirrors the outline's sweep pocket on the ear geometry
-				translate([0,0,h1]) rotate([angle, 0, 0]) translate([0,radius/2,0]) cube([t,radius,radius*2], true);
-				translate([0,0,h1]) rotate([0, 90, 0]) cylinder(t, r = radius, center = true, $fs=0.5);
-				if (inner_axis) {
-					axis_hole(-(1.5*w), tolerance/2, h1,w,radius);
-				}
-			}
-			if (!inner_axis) {
-				axis(-(tolerance)/2, tolerance/2, h1,thick,radius);
-			}
-		}
-	}
+    translate([w, 0, 0]) union() {
+        difference() {
+            union() {
+                translate([0,0,h1/2]) cube([t,radius*2, h1], true);
+                // Angular wedge mirrors the outline's sweep pocket on the ear geometry
+                translate([0,0,h1]) rotate([angle, 0, 0]) translate([0,radius/2,0]) cube([t,radius,radius*2], true);
+                translate([0,0,h1]) rotate([0, 90, 0]) cylinder(t, r = radius, center = true, $fn=200);
+                if (inner_axis) {
+                    axis_hole(-(1.5*w), tolerance/2, h1,w,radius);
+                }
+            }
+            if (!inner_axis) {
+                axis(-(tolerance)/2, tolerance/2, h1,thick,radius);
+            }
+        }
+    }
 }
 // Mirrors outcut0 to produce symmetric ears on both sides of the link end.
 module outcut(width, radius, l1, h1, thick, angle, inner_axis)
 {
-	translate([0,l1/2,0]) union() {
-		outcut0(width, radius, h1, thick, angle, inner_axis);
-		mirror([1,0,0]) outcut0(width, radius, h1, thick, angle, inner_axis);
-	}
+    translate([0,l1/2,0]) union() {
+        outcut0(width, radius, h1, thick, angle, inner_axis);
+        mirror([1,0,0]) outcut0(width, radius, h1, thick, angle, inner_axis);
+    }
 }
 
 // Cuts the inner fork at the opposite end of the link — the fork cradles the ears of
@@ -120,31 +125,31 @@ module outcut(width, radius, l1, h1, thick, angle, inner_axis)
 // whichever outcut didn't provide).
 module incut(width, radius, l1, h1, thick, angle, inner_axis)
 {
-	width2 = width - 2*(thick-tolerance);
+    width2 = width - 2*(thick-tolerance);
 
-	translate([0,-(l1/2),h1]) difference() {
-		union() {
-			translate([0,0,-(h1/2)]) cube([width2,radius*2,h1], true);
-			translate([0,0,0]) rotate([180-angle,0,0]) translate([0,radius/2,0]) cube([width2, radius, radius*2], true);
-			translate([0,0,0]) rotate([0, 90, 0]) cylinder(width2, r = radius, center = true, $fs=0.5);
-			if (!inner_axis) {
-				axis_hole((width-thick)/2+tolerance, -(tolerance/2), 0,thick,radius);
-				mirror([1,0,0]) axis_hole((width-thick)/2+tolerance, -(tolerance/2), 0,thick,radius);
-			}
-		}
-		if (inner_axis) {
-			axis(-((width2-thick)/2), -(tolerance/2), 0,thick,radius);
-			mirror([1,0,0]) axis(-((width2-thick)/2), -(tolerance/2), 0,thick,radius);
-		}
-	}
+    translate([0,-(l1/2),h1]) difference() {
+        union() {
+            translate([0,0,-(h1/2)]) cube([width2,radius*2,h1], true);
+            translate([0,0,0]) rotate([180-angle,0,0]) translate([0,radius/2,0]) cube([width2, radius, radius*2], true);
+            translate([0,0,0]) rotate([0, 90, 0]) cylinder(width2, r = radius, center = true, $fn=200);
+            if (!inner_axis) {
+                axis_hole((width-thick)/2+tolerance, -(tolerance/2), 0,thick,radius);
+                mirror([1,0,0]) axis_hole((width-thick)/2+tolerance, -(tolerance/2), 0,thick,radius);
+            }
+        }
+        if (inner_axis) {
+            axis(-((width2-thick)/2), -(tolerance/2), 0,thick,radius);
+            mirror([1,0,0]) axis(-((width2-thick)/2), -(tolerance/2), 0,thick,radius);
+        }
+    }
 }
 
 // Cross-section profile of the cable channel — open C-profile (two cylinders + connecting slab).
 module middle_0(length, radius, thick)
 {
-	rotate([90, 90, 0]) cylinder(length, r = radius, center = true, $fn=50);
-	translate([0,0,thick]) rotate([90, 90, 0]) cylinder(length, r = radius, center = true, $fn=50);
-	translate([0,0,thick/2]) cube([2*radius,length,thick], true);
+    rotate([90, 90, 0]) cylinder(length, r = radius, center = true, $fn=200);
+    translate([0,0,thick]) rotate([90, 90, 0]) cylinder(length, r = radius, center = true, $fn=200);
+    translate([0,0,thick/2]) cube([2*radius,length,thick], true);
 }
 
 // Carves out the hollow cable channel running through the full length of the link.
@@ -153,30 +158,30 @@ module middle_0(length, radius, thick)
 // preventing cables from being pinched at the joint.
 module middle(width, radius, length, height, l1, h1, thick, over, under, inner_axis)
 {
-	l = length;
-	th = max(thick,thick * height/width);
-	h = height - th;
-	w = width - 4*thick;
-	r = h / 2;
-	scale(v=[w/h,1,1]) translate(v = [0,0,r+th]) union() {
-		translate([0,h1,0]) middle_0(l, r, th);
-		translate([0,(l1/2)+0.1,0]) {
-			difference() {
-				rotate([over,0,0]) union() {
-					translate([0, l/4, 0]) middle_0(l/2, r, th);
-					translate([0, l/4,-r]) cube([2*r,l/2,2*r], true);
-				}
-				translate([0, l/4,-r]) cube([2*r,l/2,2*r], true);
-			}
-			difference() {
-				rotate([-under,0,0]) union() {
-					translate([0, l/4, 0]) middle_0(l/2, r, th);
-					translate([0, l/4,r]) cube([2*r,l/2,2*r], true);
-				}
-				translate([0, l/4,r]) cube([2*r,l/2,2*r], true);
-			}
-		}
-	}
+    l = length;
+    th = max(thick,thick * height/width);
+    h = height - th;
+    w = width - 4*thick;
+    r = h / 2;
+    scale(v=[w/h,1,1]) translate(v = [0,0,r+th]) union() {
+        translate([0,h1,0]) middle_0(l, r, th);
+        translate([0,(l1/2)+0.1,0]) {
+            difference() {
+                rotate([over,0,0]) union() {
+                    translate([0, l/4, 0]) middle_0(l/2, r, th);
+                    translate([0, l/4,-r]) cube([2*r,l/2,2*r], true);
+                }
+                translate([0, l/4,-r]) cube([2*r,l/2,2*r], true);
+            }
+            difference() {
+                rotate([-under,0,0]) union() {
+                    translate([0, l/4, 0]) middle_0(l/2, r, th);
+                    translate([0, l/4,r]) cube([2*r,l/2,2*r], true);
+                }
+                translate([0, l/4,r]) cube([2*r,l/2,2*r], true);
+            }
+        }
+    }
 }
 
 // Snap-in clip that closes the open top of the link after cables are routed.
@@ -196,11 +201,11 @@ module clip(width, height, length, tol=0)
         cube([width+tol2, cwidth, cthickness], true);
         translate([width/2-(cthickness-tol2)/2, 0, -clength/2])union(){
             cube([cthickness, cwidth, clength+tol], true);
-            translate([-cthickness/2, 0, -(clength/2-ccylinder/2)])rotate([90, 0, 0])cylinder(cwidth, r = ccylinder / 2, center= true, $fs=0.25);
+            translate([-cthickness/2, 0, -(clength/2-ccylinder/2)])rotate([90, 0, 0])cylinder(cwidth, r = ccylinder / 2, center= true, $fn=200);
         }
         translate([-(width/2-(cthickness-tol2)/2), 0, -clength/2])rotate([0, 0, 180])union(){
             cube([cthickness, cwidth, clength+tol], true);
-            translate([-cthickness/2, 0, -(clength/2-ccylinder/2)])rotate([90, 0, 0])cylinder(cwidth, r = ccylinder / 2, center= true, $fs=0.25);
+            translate([-cthickness/2, 0, -(clength/2-ccylinder/2)])rotate([90, 0, 0])cylinder(cwidth, r = ccylinder / 2, center= true, $fn=200);
         }
     }
 }
@@ -212,21 +217,21 @@ module clip(width, height, length, tol=0)
 // ready to print in the same job without supports.
 module chain_link(width, length, height, under_angle, over_angle, inner_axis, clip)
 {
-	thick = min(2,max(1, 0.1*width));
-	radius = height / 2;
-	len    = max(length, 2*(height+thick));
-	l1     = len - (2 * radius);   // straight mid-section length between the two rounded ends
-	h1     = radius;
-	under  = min(max_angle, under_angle);
-	over   = min(max_angle, over_angle);
+    thick = min(2,max(1, 0.1*width));
+    radius = height / 2;
+    len    = max(length, 2*(height+thick));
+    l1     = len - (2 * radius);   // straight mid-section length between the two rounded ends
+    h1     = radius;
+    under  = min(max_angle, under_angle);
+    over   = min(max_angle, over_angle);
 
-	difference() {
-		outline(width, len, height, radius, l1, under);
-		outcut(width, radius, l1, h1, thick, over,  inner_axis);
-		middle(width, radius, len, height, l1, h1, thick, over, under, inner_axis);
-		incut(width, radius, l1, h1, thick, over, inner_axis);
+    difference() {
+        outline(width, len, height, radius, l1, under);
+        outcut(width, radius, l1, h1, thick, over,  inner_axis);
+        middle(width, radius, len, height, l1, h1, thick, over, under, inner_axis);
+        incut(width, radius, l1, h1, thick, over, inner_axis);
         clip(width, height, len, tolerance);  // cut the clip slot with added tolerance
-	}
+    }
     // Place the clip body beside the link (not overlapping) for single-print convenience
     if(clip) translate([0, 2+height+len/2, (len/10)/2])rotate([90, 0, 0])clip(width, height, len);
 }
@@ -235,16 +240,16 @@ module chain_link(width, length, height, under_angle, over_angle, inner_axis, cl
 // to visually verify clearance and joint geometry before printing a full chain.
 module debug(width, length, height, under_angle, over_angle, inner_axis)
 {
-	thick = min(2,max(1, 0.1*width));
-	radius = height / 2;
-	len    = max(length, 2*(height+thick));
-	l1     = len - (2 * radius);
-	y_ofs  = (l1 / 2) + 0.1;
-	z_ofs  = radius;
+    thick = min(2,max(1, 0.1*width));
+    radius = height / 2;
+    len    = max(length, 2*(height+thick));
+    l1     = len - (2 * radius);
+    y_ofs  = (l1 / 2) + 0.1;
+    z_ofs  = radius;
 
-	chain_link(width, length, height, under_angle, over_angle, inner_axis);
-	translate(v = [0, -y_ofs,z_ofs]) rotate(a = [min(max_angle, under_angle),0,0]) translate(v = [0,-y_ofs,-z_ofs]) chain_link(width, length, height, under_angle, over_angle, inner_axis);
-	translate(v = [0, y_ofs,z_ofs]) rotate(a = [min(max_angle, over_angle),0,0]) translate(v = [0,y_ofs,-z_ofs]) chain_link(width, length, height, under_angle, over_angle, inner_axis);
+    chain_link(width, length, height, under_angle, over_angle, inner_axis);
+    translate(v = [0, -y_ofs,z_ofs]) rotate(a = [min(max_angle, under_angle),0,0]) translate(v = [0,-y_ofs,-z_ofs]) chain_link(width, length, height, under_angle, over_angle, inner_axis);
+    translate(v = [0, y_ofs,z_ofs]) rotate(a = [min(max_angle, over_angle),0,0]) translate(v = [0,y_ofs,-z_ofs]) chain_link(width, length, height, under_angle, over_angle, inner_axis);
 }
 //debug(15, 18, 10, 30, 30, true);
 
