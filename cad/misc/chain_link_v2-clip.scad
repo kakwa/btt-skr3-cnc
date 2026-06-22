@@ -51,6 +51,10 @@ leg_length=30; // [5:5:100]
 // Extra clearance on mating surfaces to account for FDM dimensional variance
 tolerance = 0.001;
 
+/* [Further Settings] */
+// Extra clip clearance on mating surfaces to account for FDM dimensional variance
+clip_tolerance = 0.1;
+
 // Builds the outer shell of one link: a rectangular body with rounded cylindrical ends.
 // The angular wedge cuts at each end shape the bending pocket so adjacent links can
 // rotate up to `angle` degrees without the shells clashing.
@@ -284,7 +288,7 @@ module chain_link(width, length, height, under_angle, over_angle, inner_axis, cl
             if (!end_leg_outter) outcut(width, radius, l1, h1, thick, over, inner_axis);
             middle(width, radius, len, height, l1, h1, thick, over, under, inner_axis);
             incut(width, radius, l1, h1, thick, over, inner_axis, end_leg_inner);
-            clip(width, height, len, tolerance);  // cut the clip slot with added tolerance
+            clip(width, height, len, clip_tolerance);  // cut the clip slot with added tolerance
         }
             if (end_leg_outter)               end_leg(width, height, leg_length);
         if (end_leg_inner)  mirror([0,1,0]) end_leg(width, height, leg_length);
