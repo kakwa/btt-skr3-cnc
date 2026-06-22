@@ -62,16 +62,10 @@ module outline(width, length, height, radius, l1, angle)
     difference() {
         union() {
             translate([0, 0, height/2])    cube([width,l1,height], true);
-            translate([0, -t, t])   cube([width,l1,height/2], true);
             translate([0, -y_ofs, radius]) rotate([0, 90, 0]) cylinder(width, r = radius, center = true, $fn=200);
-            translate([0, -y_ofs -t , radius-t]) rotate([0, 90, 0]) cylinder(width, r = t, center = true, $fn=200);
             translate([0,  y_ofs, radius]) rotate([0, 90, 0]) cylinder(width, r = radius, center = true, $fn=200);
-            // Wedge extensions allow the rounded end to sweep through the bend angle without gap
-            translate([0, -y_ofs, radius]) rotate([angle,     0, 0]) translate([0, -t, -t + t/2]) cube([width,radius,t], true);
-            translate([0,  y_ofs, radius]) rotate([360-angle, 0, 0]) translate([0,  t/2, -t]) cube([width,radius/2,radius], true);
-            translate([0,  y_ofs+t, radius+t/2]) rotate([360-angle, 0, 0]) translate([0,  t/2, -t]) cube([width,radius/2,t], true);
-            translate([0,  y_ofs, radius]) rotate([0, 90, 0]) cylinder(width, r = radius, center = true, $fn=200);
-            translate([0, y_ofs +t , radius-t]) rotate([0, 90, 0]) cylinder(width, r = t, center = true, $fn=200);
+            translate([0, -y_ofs, radius]) rotate([angle,     0, 0]) translate([0, -t, -t]) cube([width,radius,radius], true);
+            translate([0,  y_ofs, radius]) rotate([360-angle, 0, 0]) translate([0,  t, -t]) cube([width,radius,radius], true);
         }
         // Trim the bottom flat so the printed part sits flush on the bed
         translate([0, 0, -(t/2)]) cube([width,length,t], true);
