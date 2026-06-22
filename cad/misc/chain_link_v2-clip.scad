@@ -6,7 +6,7 @@ Clip module, Toothpick diameter Variable,
 OpenSCAD/Thingiverse Customizer optimization,
 Multicolor Modifier Block and extra comments
 added by Gasol1n (Christian Riedl): https://www.gasol1n.com/
-                                                        https://www.thingiverse.com/Gasolin
+https://www.thingiverse.com/Gasolin
 
 Licensed under CC BY-SA 3.0
 https://creativecommons.org/licenses/by-sa/3.0/
@@ -34,21 +34,13 @@ over_angle=30; // [50]
 // true: pivot pins point inward (female outer shell); false: pins point outward (male outer shell)
 // Must alternate or match between linked pairs — mixing produces the male/female joint
 inner_axis=0; // [1:true, 0:false]
-// true: top is solid (no cable access slot or clip); false: open top for cable insertion
-closed=0; // [1:true, 0:false]
-// true: use snap-in clip to close the top; false: use a toothpick/pin through a drilled hole
-// Only applies when closed=false. Clip is printed as a separate piece beside the link.
+
+// true: print the snap-in clip beside the link; false: only print the link (no clip printed)
 clip=1; // [1:true, 0:false]
 
 /* [Further Settings] */
 // Extra clearance on mating surfaces to account for FDM dimensional variance
 tolerance = 0.2;
-// Diameter of the toothpick or pin used to close the link (only used when clip=false)
-toothpick = 2.1;
-// Generate Modifier Block for Multicolor Stripe
-multicolor_block=0; // [1:true, 0:false]
-//Height of the Modifier (Multicolor) Block
-mcb_height=2;
 
 // Builds the outer shell of one link: a rectangular body with rounded cylindrical ends.
 // The angular wedge cuts at each end shape the bending pocket so adjacent links can
@@ -147,43 +139,38 @@ module incut(width, radius, l1, h1, thick, angle, inner_axis)
 	}
 }
 
-// Cross-section profile of the cable channel — either a closed rectangular tube
-// or an open C-profile (two cylinders + connecting slab) for cable insertion.
-module middle_0(length, radius, thick, closed)
+// Cross-section profile of the cable channel — open C-profile (two cylinders + connecting slab).
+module middle_0(length, radius, thick)
 {
-	if (closed) {
-		cube([radius*2,length,radius*2], true);
-	} else {
-		rotate([90, 90, 0]) cylinder(length, r = radius, center = true, $fn=50);
-		translate([0,0,thick]) rotate([90, 90, 0]) cylinder(length, r = radius, center = true, $fn=50);
-		translate([0,0,thick/2]) cube([2*radius,length,thick], true);
-	}
+	rotate([90, 90, 0]) cylinder(length, r = radius, center = true, $fn=50);
+	translate([0,0,thick]) rotate([90, 90, 0]) cylinder(length, r = radius, center = true, $fn=50);
+	translate([0,0,thick/2]) cube([2*radius,length,thick], true);
 }
 
 // Carves out the hollow cable channel running through the full length of the link.
 // The channel is split into three segments (centre + two angled halves) and each half
 // is swept through the articulation angle so the bore stays clear at maximum bend —
 // preventing cables from being pinched at the joint.
-module middle(width, radius, length, height, l1, h1, thick, over, under, inner_axis, closed)
+module middle(width, radius, length, height, l1, h1, thick, over, under, inner_axis)
 {
 	l = length;
 	th = max(thick,thick * height/width);
-	h = height - (closed ?2 :1)*th;
+	h = height - th;
 	w = width - 4*thick;
 	r = h / 2;
 	scale(v=[w/h,1,1]) translate(v = [0,0,r+th]) union() {
-		translate([0,h1,0]) middle_0(l, r, th, closed);
+		translate([0,h1,0]) middle_0(l, r, th);
 		translate([0,(l1/2)+0.1,0]) {
 			difference() {
 				rotate([over,0,0]) union() {
-					translate([0, l/4, 0]) middle_0(l/2, r, th, closed);
+					translate([0, l/4, 0]) middle_0(l/2, r, th);
 					translate([0, l/4,-r]) cube([2*r,l/2,2*r], true);
 				}
 				translate([0, l/4,-r]) cube([2*r,l/2,2*r], true);
 			}
 			difference() {
 				rotate([-under,0,0]) union() {
-					translate([0, l/4, 0]) middle_0(l/2, r, th, closed);
+					translate([0, l/4, 0]) middle_0(l/2, r, th);
 					translate([0, l/4,r]) cube([2*r,l/2,2*r], true);
 				}
 				translate([0, l/4,r]) cube([2*r,l/2,2*r], true);
@@ -218,21 +205,12 @@ module clip(width, height, length, tol=0)
     }
 }
 
-// Drills the transverse hole used to close the link with a physical pin (toothpick).
-// Only relevant when clip=false and closed=false.
-module hole(width, height, closed)
-{
-	if (!closed) {
-		translate([0,0,height-1.5]) rotate([0, 90, 0]) cylinder(width+1, r = toothpick / 2, center = true, $fs=0.25);
-	}
-}
-
 // Main assembly: combines all modules into a single printable chain link.
 // thick is clamped between 1 and 2 mm regardless of width to keep walls printable.
 // len is floored at 2*(height+thick) so the link is always long enough to form a proper joint.
-// The clip (if enabled) is output as a separate body translated clear of the link,
+// When clip=true the clip slot is cut into the link and the clip body is placed beside it,
 // ready to print in the same job without supports.
-module chain_link(width, length, height, under_angle, over_angle, inner_axis, closed, clip)
+module chain_link(width, length, height, under_angle, over_angle, inner_axis, clip)
 {
 	thick = min(2,max(1, 0.1*width));
 	radius = height / 2;
@@ -245,21 +223,17 @@ module chain_link(width, length, height, under_angle, over_angle, inner_axis, cl
 	difference() {
 		outline(width, len, height, radius, l1, under);
 		outcut(width, radius, l1, h1, thick, over,  inner_axis);
-		middle(width, radius, len, height, l1, h1, thick, over, under, inner_axis, closed);
+		middle(width, radius, len, height, l1, h1, thick, over, under, inner_axis);
 		incut(width, radius, l1, h1, thick, over, inner_axis);
-        if(clip&&!closed){
-            clip(width, height, len, tolerance);  // cut the clip slot with added tolerance
-        }else{
-            hole(width, height, closed);
-        }
+        clip(width, height, len, tolerance);  // cut the clip slot with added tolerance
 	}
     // Place the clip body beside the link (not overlapping) for single-print convenience
-    if(clip&&!closed) translate([0, 2+height+len/2, (len/10)/2])rotate([90, 0, 0])clip(width, height, len);
+    if(clip) translate([0, 2+height+len/2, (len/10)/2])rotate([90, 0, 0])clip(width, height, len);
 }
 
 // Preview helper: renders three links articulated at their maximum bending angles
 // to visually verify clearance and joint geometry before printing a full chain.
-module debug(width, length, height, under_angle, over_angle, inner_axis, closed)
+module debug(width, length, height, under_angle, over_angle, inner_axis)
 {
 	thick = min(2,max(1, 0.1*width));
 	radius = height / 2;
@@ -268,18 +242,11 @@ module debug(width, length, height, under_angle, over_angle, inner_axis, closed)
 	y_ofs  = (l1 / 2) + 0.1;
 	z_ofs  = radius;
 
-	chain_link(width, length, height, under_angle, over_angle, inner_axis, closed);
-	translate(v = [0, -y_ofs,z_ofs]) rotate(a = [min(max_angle, under_angle),0,0]) translate(v = [0,-y_ofs,-z_ofs]) chain_link(width, length, height, under_angle, over_angle, inner_axis, closed);
-	translate(v = [0, y_ofs,z_ofs]) rotate(a = [min(max_angle, over_angle),0,0]) translate(v = [0,y_ofs,-z_ofs]) chain_link(width, length, height, under_angle, over_angle, inner_axis, closed);
+	chain_link(width, length, height, under_angle, over_angle, inner_axis);
+	translate(v = [0, -y_ofs,z_ofs]) rotate(a = [min(max_angle, under_angle),0,0]) translate(v = [0,-y_ofs,-z_ofs]) chain_link(width, length, height, under_angle, over_angle, inner_axis);
+	translate(v = [0, y_ofs,z_ofs]) rotate(a = [min(max_angle, over_angle),0,0]) translate(v = [0,y_ofs,-z_ofs]) chain_link(width, length, height, under_angle, over_angle, inner_axis);
 }
-//debug(15, 18, 10, 30, 30, true, false);
+//debug(15, 18, 10, 30, 30, true);
 
-//Multicolor Block or Chain Link
-if(multicolor_block){
-    translate([0, 0, height/2])cube([width+2, length+2, mcb_height], center = true);
-}else{
-    //Old
-    //chain_link(width= 30, length=45, height=15, under_angle=0, over_angle=30, inner_axis=false, closed=false , clip=true);
-    // New - Changed for Customizer compatibility
-    chain_link(width, length, height, under_angle, over_angle, inner_axis, closed , clip);
-}
+//render Chain Link
+chain_link(width, length, height, under_angle, over_angle, inner_axis, clip);
