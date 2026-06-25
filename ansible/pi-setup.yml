@@ -16,11 +16,25 @@
       - "-D DEFAULT_Z_CURRENT=1000.0f"
       - "-D DEFAULT_A_CURRENT=1000.0f"
       - "-D DEFAULT_B_CURRENT=1000.0f"
+<<<<<<< HEAD
       - "-D DEFAULT_X_STEPS_PER_MM=80.0f"
       - "-D DEFAULT_Y_STEPS_PER_MM=53.33f"
       - "-D DEFAULT_Z_STEPS_PER_MM=266.67f"
       - "-D DEFAULT_A_STEPS_PER_MM=80.0f"
       - "-D DEFAULT_B_STEPS_PER_MM=53.33f"
+||||||| parent of d4ecede (update values for steps per mm with more real world stuff)
+      - "-D DEFAULT_X_STEPS_PER_MM=80.0f"
+      - "-D DEFAULT_Y_STEPS_PER_MM=80.0f"
+      - "-D DEFAULT_Z_STEPS_PER_MM=400.0f"
+      - "-D DEFAULT_A_STEPS_PER_MM=80.0f"
+      - "-D DEFAULT_B_STEPS_PER_MM=80.0f"
+=======
+      - "-D DEFAULT_X_STEPS_PER_MM=56.8f"
+      - "-D DEFAULT_Y_STEPS_PER_MM=56.8f"
+      - "-D DEFAULT_Z_STEPS_PER_MM=1102.0f"
+      - "-D DEFAULT_A_STEPS_PER_MM=56.8f"
+      - "-D DEFAULT_B_STEPS_PER_MM=56.8f"
+>>>>>>> d4ecede (update values for steps per mm with more real world stuff)
       - "-D ESTOP_ENABLE=0"
       - "-D SAFETY_DOOR_ENABLE=1"
       - "-D CONTROL_ENABLE=0"
