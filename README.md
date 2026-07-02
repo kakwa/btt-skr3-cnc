@@ -39,3 +39,5 @@ It keeps the original stepper motors, overal frame, and endstops.
 ## Documentation
 
 Project documentation is available in [`docs/`](docs/).
+
+Salut c'est yann
