@@ -21,7 +21,7 @@
       - "-D DEFAULT_Z_STEPS_PER_MM=1102.0f"
       - "-D DEFAULT_A_STEPS_PER_MM=56.8f"
       - "-D DEFAULT_B_STEPS_PER_MM=56.8f"
-      - "-D ESTOP_ENABLE=0"
+      - "-D ESTOP_ENABLE=1"
       - "-D SAFETY_DOOR_ENABLE=1"
       - "-D CONTROL_ENABLE=0"
       - "-D TRINAMIC_UART_ENABLE=0"
