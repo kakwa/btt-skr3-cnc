@@ -6,8 +6,7 @@ Ansible role to set up grblHAL build environment and deploy custom configuration
 
 - Installs ARM GCC toolchain and PlatformIO
 - Deploys grblHAL sources from local repository
-- Applies custom `my_machine.h` configuration
-- Updates `platformio.ini` with custom board configuration
+- Injects a custom `[env:kwcnc_yeti]` PlatformIO build environment with machine-specific build flags
 - Creates helper scripts for building and flashing firmware
 
 ## Configuration
@@ -15,7 +14,7 @@ Ansible role to set up grblHAL build environment and deploy custom configuration
 The role configures the BTT SKR3 board with:
 
 - **5 TMC5160 stepper drivers** in SPI mode
-- **Ganged X and Y axes** with auto-squaring
+- **Ganged X and Y axes** (auto-squaring disabled by default — see [Ganged Axes Configuration](#ganged-axes-configuration))
 - **3 primary axes** (X, Y, Z) + 2 ganged motors (X2, Y2)
 - Custom build identifier with timestamp
 - USB serial communication
@@ -41,23 +40,9 @@ See `defaults/main.yml` for all available variables:
 
 ## Files
 
-### Configuration Files
-
-- `files/my_machine.h`: Custom machine configuration
-  - Board selection
-  - Motor configuration (ganged X/Y axes)
-  - TMC5160 SPI mode
-  - Spindle, probe, and control settings
-
-- `files/platformio.ini`: PlatformIO build configuration
-  - Simplified configuration with only BTT SKR3 board
-  - Common build settings (cache, floating point, ISR location)
-  - USB serial and SD card support
-  - Hardware-specific settings (HSE crystal frequency)
-  - Uses my_machine.h for feature configuration
-
 ### Templates
 
+- `templates/platformio_kwcnc_yeti.ini.j2`: Renders the `[env:kwcnc_yeti]` PlatformIO environment block, layered on top of the upstream `btt_skr_30_h723_tmc5160_bl128` environment (board, linker script, `lib_deps`), with `grblhal_machine_build_flags` appended as extra `build_flags`. This rendered block is injected into `{{ grblhal_source_dir }}/platformio.ini` via a `blockinfile` task (see `tasks/main.yml`).
 - `templates/skr3-build.sh.j2`: Build script helper
 - `templates/skr3-flash.sh.j2`: Flash script helper (interactive DFU mode)
 
@@ -123,22 +108,20 @@ Ganged axes use **two motors for a single axis** to provide:
 
 ## TMC5160 Motor Current Configuration
 
-### Key Settings in `my_machine.h`
+### Key Settings (PlatformIO build flags in `ansible/pi-setup.yml`)
 
-Motor current intensity is controlled by these defines:
+Motor current intensity is controlled by these `grblhal_machine_build_flags` entries (rendered as `-D` defines):
 
-```c
-#define DEFAULT_X_CURRENT     1000.0f  // mA RMS (run current)
-#define DEFAULT_Y_CURRENT     1000.0f
-#define DEFAULT_Z_CURRENT     1000.0f
-#define DEFAULT_A_CURRENT     1000.0f  // X2 ganged motor
-#define DEFAULT_B_CURRENT     1000.0f  // Y2 ganged motor
-
-#define TMC_X_HOLD_CURRENT_PCT 50  // 50% current when holding
-#define TRINAMIC_R_SENSE       75  // Sense resistor (milliohms)
-#define TRINAMIC_DEFAULT_MICROSTEPS 16
-#define TMC_STEALTHCHOP        0   // 0=SpreadCycle, 1=StealthChop
+```yaml
+- "-D DEFAULT_X_CURRENT=1000.0f"  # mA RMS (run current)
+- "-D DEFAULT_Y_CURRENT=1000.0f"
+- "-D DEFAULT_Z_CURRENT=1000.0f"
+- "-D DEFAULT_A_CURRENT=1000.0f"  # X2 ganged motor
+- "-D DEFAULT_B_CURRENT=1000.0f"  # Y2 ganged motor
+- "-D TRINAMIC_R_SENSE=75"        # Sense resistor (milliohms)
 ```
+
+Not currently set (grblHAL defaults apply unless added to `grblhal_machine_build_flags`): `TMC_X_HOLD_CURRENT_PCT`, `TRINAMIC_DEFAULT_MICROSTEPS`, `TMC_STEALTHCHOP`.
 
 ### How to Choose Motor Current
 
@@ -214,43 +197,39 @@ After flashing, motor current can be tuned via grblHAL settings without rebuildi
 
 ## Configuration Architecture
 
-### Primary Configuration: `my_machine.h`
+### Primary Configuration: PlatformIO build flags
 
-All feature settings are defined in `my_machine.h`:
+All feature settings are passed as compiler `-D` build flags, not via `Inc/my_machine.h`. The base `btt_skr_30_h723_tmc5160_bl128` environment (defined upstream in `grblhal/platformio.ini`) already sets `OVERRIDE_MY_MACHINE`, so `my_machine.h` is ignored regardless — the flags below are the single source of truth:
 
-```c
-#define BOARD_BTT_SKR_30      // Board selection
-#define X_GANGED 1            // Enable X axis ganging
-#define X_AUTO_SQUARE 1       // Enable X auto-squaring
-#define Y_GANGED 1            // Enable Y axis ganging
-#define Y_AUTO_SQUARE 1       // Enable Y auto-squaring
-#define TRINAMIC_ENABLE 5160  // TMC5160 support
-#define TRINAMIC_SPI_ENABLE 1 // Use SPI mode
-#define GRBL_BUILD_INFO "BTT-SKR3-TMC5160-SPI-XY-GANGED"
+```yaml
+grblhal_machine_build_flags:
+  - "-D X_GANGED=1"            # Enable X axis ganging
+  - "-D X_AUTO_SQUARE=0"       # X auto-squaring disabled
+  - "-D Y_GANGED=1"            # Enable Y axis ganging
+  - "-D Y_AUTO_SQUARE=0"       # Y auto-squaring disabled
+  - "-D TRINAMIC_ENABLE=5160"  # TMC5160 support
+  - "-D TRINAMIC_SPI_ENABLE=1" # Use SPI mode
+  # ...see ansible/pi-setup.yml for the full list (currents, steps/mm, limits, etc.)
 ```
+
+These are defined in `ansible/pi-setup.yml` (`grblhal_machine_build_flags` var) and rendered into `[env:kwcnc_yeti]` by `templates/platformio_kwcnc_yeti.ini.j2`.
 
 ### PlatformIO Build Settings
 
-The `platformio.ini` file contains **only hardware-specific build settings**:
-- HSE crystal frequency (25MHz)
-- Linker script (128KB bootloader)
-- Library dependencies
-- Build optimizations (cache, ISR location, floating point)
-
-**No `OVERRIDE_MY_MACHINE`**: The configuration uses `my_machine.h` as the single source of truth for feature settings.
+The rendered `[env:kwcnc_yeti]` block inherits board, linker script (128KB bootloader), and `lib_deps`/`lib_extra_dirs` from the upstream `btt_skr_30_h723_tmc5160_bl128` environment, and appends `grblhal_machine_build_flags` on top.
 
 ## Troubleshooting
 
 ### Build Issues
 
 **Problem**: Ganged axes not working after build
-**Solution**: Ensure `my_machine.h` is deployed correctly. Run the playbook again to deploy the configuration.
+**Solution**: Ensure `grblhal_machine_build_flags` in `ansible/pi-setup.yml` still contains `X_GANGED=1`/`Y_GANGED=1`, and re-run the playbook so the `[env:kwcnc_yeti]` block in `platformio.ini` is refreshed.
 
 **Problem**: Build fails with "BTT SKR-3 supports 5 motors max"
 **Solution**: Don't set `N_AXIS > 3`. Use ganged axes (N_AXIS=3 + 2 ganged motors = 5 total)
 
-**Problem**: Configuration changes in `my_machine.h` not taking effect
-**Solution**: Verify `OVERRIDE_MY_MACHINE` is **not** defined in `platformio.ini`. Clean build cache: `pio run -t clean`
+**Problem**: Changes to `grblhal_machine_build_flags` not taking effect
+**Solution**: Re-run the playbook to regenerate the `[env:kwcnc_yeti]` block, then clean the build cache: `pio run -t clean -e kwcnc_yeti`
 
 ### Flash Issues
 
@@ -264,17 +243,15 @@ The `platformio.ini` file contains **only hardware-specific build settings**:
 
 ```
 grblhal-builder/
-├── README.md                           # This file
+├── README.md                                # This file
 ├── defaults/
-│   └── main.yml                        # Default variables
-├── files/
-│   ├── my_machine.h                    # Board configuration
-│   └── platformio.ini                  # PlatformIO configuration
+│   └── main.yml                             # Default variables
 ├── tasks/
-│   └── main.yml                        # Main tasks
+│   └── main.yml                             # Main tasks
 └── templates/
-    ├── skr3-build.sh.j2                # Build script
-    └── skr3-flash.sh.j2                # Flash script
+    ├── platformio_kwcnc_yeti.ini.j2          # [env:kwcnc_yeti] build environment
+    ├── skr3-build.sh.j2                      # Build script
+    └── skr3-flash.sh.j2                      # Flash script
 ```
 
 ## References
