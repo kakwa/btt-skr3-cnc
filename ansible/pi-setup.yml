@@ -22,7 +22,7 @@
       - "-D DEFAULT_A_STEPS_PER_MM=56.8f"
       - "-D DEFAULT_B_STEPS_PER_MM=56.8f"
       - "-D ESTOP_ENABLE=1"
-      - "-D SAFETY_DOOR_ENABLE=1"
+      - "-D CONTROL_ENABLE=64"
       - "-D TRINAMIC_SPI_ENABLE=1"
       - "-D TRINAMIC_ENABLE=5160"
       - "-D TRINAMIC_R_SENSE=75"
